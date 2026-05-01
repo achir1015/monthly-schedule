@@ -95,7 +95,7 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
 /**
  * 月班表線上管理系統
  * - 資料以 XML 格式備份/還原
- * - 使用 window.storage 做跨 session 持久化
+ * - 使用 window.storage（Claude）或 localStorage（GitHub Pages）做跨 session 持久化
  * - 支援桌機與手機版
  * - 預載入 115年5月（西元2026年）班表（由 PDF 轉入）
  */
@@ -2603,35 +2603,50 @@ function App() {
     setIsMobile = _useState44[1];
   var key = monthKey(year, month); // 目前月份的資料 key
 
+  // ── 環境偵測：Claude artifact 使用 window.storage，其他環境（GitHub Pages 等）使用 localStorage ──
+  var isClaudeEnv = typeof window.storage !== "undefined" && typeof window.storage.get === "function";
+
   // ── 從持久化儲存載入資料 ──
   useEffect(function () {
     _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
-      var res, d, _t2;
+      var data, res, raw, _t2;
       return _regenerator().w(function (_context2) {
         while (1) switch (_context2.p = _context2.n) {
           case 0:
             _context2.p = 0;
+            data = null;
+            if (!isClaudeEnv) {
+              _context2.n = 2;
+              break;
+            }
             _context2.n = 1;
             return window.storage.get("rcw_schedule_v1");
           case 1:
             res = _context2.v;
-            if (res !== null && res !== void 0 && res.value) {
-              d = JSON.parse(res.value);
-              if (d.employees) setEmployees(d.employees);
-              if (d.shiftDefs) setShiftDefs(d.shiftDefs);
-              if (d.schedules) setSchedules(d.schedules);
-            }
+            if (res !== null && res !== void 0 && res.value) data = JSON.parse(res.value);
             _context2.n = 3;
             break;
           case 2:
-            _context2.p = 2;
-            _t2 = _context2.v;
+            // GitHub Pages / 本機等一般瀏覽器環境
+            raw = localStorage.getItem("rcw_schedule_v1");
+            if (raw) data = JSON.parse(raw);
           case 3:
-            setReady(true);
+            if (data) {
+              if (data.employees) setEmployees(data.employees);
+              if (data.shiftDefs) setShiftDefs(data.shiftDefs);
+              if (data.schedules) setSchedules(data.schedules);
+            }
+            _context2.n = 5;
+            break;
           case 4:
+            _context2.p = 4;
+            _t2 = _context2.v;
+          case 5:
+            setReady(true);
+          case 6:
             return _context2.a(2);
         }
-      }, _callee2, null, [[0, 2]]);
+      }, _callee2, null, [[0, 4]]);
     }))();
   }, []);
 
@@ -2646,14 +2661,29 @@ function App() {
     };
   }, []);
 
-  /** 儲存至持久化儲存 */
+  /**
+   * 儲存至持久化儲存
+   * - Claude artifact 環境：使用 window.storage（跨 session 保留）
+   * - GitHub Pages / 本機環境：使用 localStorage
+   */
   var persist = useCallback(function (emp, sd, sch) {
-    window.storage.set("rcw_schedule_v1", JSON.stringify({
+    var data = JSON.stringify({
       employees: emp,
       shiftDefs: sd,
       schedules: sch
-    })).catch(function () {}); // 靜默忽略儲存錯誤
-  }, []);
+    });
+    try {
+      if (isClaudeEnv) {
+        // Claude artifact：非同步儲存，錯誤靜默忽略
+        window.storage.set("rcw_schedule_v1", data).catch(function () {});
+      } else {
+        // 一般瀏覽器：localStorage 同步儲存
+        localStorage.setItem("rcw_schedule_v1", data);
+      }
+    } catch (_unused2) {
+      // 儲存失敗（例如無痕模式 localStorage 被封鎖），靜默忽略
+    }
+  }, [isClaudeEnv]);
 
   // ── 確保切換月份時有空白資料 ──
   useEffect(function () {

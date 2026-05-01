@@ -1,7 +1,7 @@
 /**
  * 月班表線上管理系統
  * - 資料以 XML 格式備份/還原
- * - 使用 window.storage 做跨 session 持久化
+ * - 使用 window.storage（Claude）或 localStorage（GitHub Pages）做跨 session 持久化
  * - 支援桌機與手機版
  * - 預載入 115年5月（西元2026年）班表（由 PDF 轉入）
  */
@@ -533,105 +533,6 @@ function ScheduleTab({ employees, shiftDefs, schedule, year, month, onUpdate }) 
                 </tr>
               );
 
-              // ── 班別選擇展開列（只在選中員工時顯示） ──
-              if (editing?.empId === emp.id) {
-                rows.push(
-                  <tr key={`pick-${emp.id}`}>
-                    <td
-                      colSpan={days + 2}
-                      style={{
-                        padding: "8px 12px",
-                        background: "#eff6ff",
-                        borderTop: "1px solid #bfdbfe",
-                        borderBottom: "1px solid #bfdbfe",
-                      }}
-                    >
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          flexWrap: "wrap",
-                          gap: 6,
-                        }}
-                      >
-                        {/* 提示文字 */}
-                        <span
-                          style={{
-                            fontSize: 17,
-                            color: "#1d4ed8",
-                            fontWeight: 500,
-                            marginRight: 4,
-                          }}
-                        >
-                          {emp.name}・{month}/{editing.dayIdx + 1}：
-                        </span>
-                        {/* 班別選擇按鈕 */}
-                        {shiftDefs.map((st) => (
-                          <button
-                            key={st.code}
-                            onClick={() => {
-                              onUpdate(emp.id, editing.dayIdx, st.code);
-                              setEditing(null);
-                            }}
-                            style={{
-                              padding: "3px 10px",
-                              border:
-                                empShifts[editing.dayIdx] === st.code
-                                  ? "2px solid #1e3a5f"
-                                  : "1px solid transparent",
-                              borderRadius: 4,
-                              background: st.bg,
-                              color: st.fg,
-                              fontSize: 17,
-                              fontWeight: 700,
-                              cursor: "pointer",
-                              fontFamily: "inherit",
-                            }}
-                          >
-                            {st.code}　{st.name}
-                          </button>
-                        ))}
-                        {/* 清除按鈕 */}
-                        <button
-                          onClick={() => {
-                            onUpdate(emp.id, editing.dayIdx, "-");
-                            setEditing(null);
-                          }}
-                          style={{
-                            padding: "3px 10px",
-                            border: "1px solid #d1d5db",
-                            borderRadius: 4,
-                            background: "#f9fafb",
-                            color: "#6b7280",
-                            fontSize: 17,
-                            cursor: "pointer",
-                            fontFamily: "inherit",
-                          }}
-                        >
-                          清除
-                        </button>
-                        {/* 取消按鈕 */}
-                        <button
-                          onClick={() => setEditing(null)}
-                          style={{
-                            padding: "3px 10px",
-                            border: "1px solid #d1d5db",
-                            borderRadius: 4,
-                            background: "#fff",
-                            color: "#9ca3af",
-                            fontSize: 17,
-                            cursor: "pointer",
-                            fontFamily: "inherit",
-                          }}
-                        >
-                          取消
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              }
-
               return rows;
             })}
           </tbody>
@@ -695,6 +596,84 @@ function ScheduleTab({ employees, shiftDefs, schedule, year, month, onUpdate }) 
           </tfoot>
         </table>
       </div>
+
+      {/* ── 編輯面板（固定在班表下方，不影響表格版面）── */}
+      {editing && (() => {
+        const editEmp    = employees.find(e => e.id === editing.empId);
+        const editShifts = schedule[editing.empId] || [];
+        const curSh      = editShifts[editing.dayIdx] || "-";
+        const dow        = new Date(year, month - 1, editing.dayIdx + 1).getDay();
+        const dowLabel   = ["日","一","二","三","四","五","六"][dow];
+        return (
+          <div style={{
+            marginTop: 8,
+            background: "#eff6ff",
+            border: "2px solid #3b82f6",
+            borderRadius: 10,
+            padding: "14px 16px",
+            display: "flex",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: 8,
+          }}>
+            {/* 說明文字 */}
+            <span style={{
+              fontSize: 17, fontWeight: 700, color: "#1e40af",
+              marginRight: 6, whiteSpace: "nowrap",
+            }}>
+              ✏️ {editEmp?.name}・{month}/{editing.dayIdx + 1}（{dowLabel}）
+            </span>
+            <span style={{ fontSize: 15, color: "#6b7280", marginRight: 8 }}>
+              目前：<strong style={{ color: "#1e3a5f" }}>{curSh === "-" ? "（無）" : curSh}</strong>
+            </span>
+            {/* 班別選擇按鈕 */}
+            {shiftDefs.map((st) => (
+              <button
+                key={st.code}
+                onClick={() => {
+                  onUpdate(editing.empId, editing.dayIdx, st.code);
+                  setEditing(null);
+                }}
+                style={{
+                  padding: "7px 16px",
+                  border: curSh === st.code ? "3px solid #1e3a5f" : "2px solid transparent",
+                  borderRadius: 6,
+                  background: st.bg,
+                  color: st.fg,
+                  fontSize: 17, fontWeight: 700,
+                  cursor: "pointer", fontFamily: "inherit",
+                  boxShadow: curSh === st.code ? "0 0 0 2px #93c5fd" : "none",
+                }}
+              >
+                {st.code}　{st.name}
+              </button>
+            ))}
+            {/* 清除 */}
+            <button
+              onClick={() => { onUpdate(editing.empId, editing.dayIdx, "-"); setEditing(null); }}
+              style={{
+                padding: "7px 14px", border: "1px solid #d1d5db",
+                borderRadius: 6, background: "#f9fafb", color: "#6b7280",
+                fontSize: 17, cursor: "pointer", fontFamily: "inherit",
+              }}
+            >
+              清除
+            </button>
+            {/* 關閉 */}
+            <button
+              onClick={() => setEditing(null)}
+              style={{
+                marginLeft: "auto",
+                padding: "7px 14px", border: "1px solid #d1d5db",
+                borderRadius: 6, background: "#fff", color: "#9ca3af",
+                fontSize: 15, cursor: "pointer", fontFamily: "inherit",
+              }}
+            >
+              ✕ 關閉
+            </button>
+          </div>
+        );
+      })()}
     </div>
   );
 }
@@ -2157,19 +2136,31 @@ function App() {
 
   const key = monthKey(year, month); // 目前月份的資料 key
 
+  // ── 環境偵測：Claude artifact 使用 window.storage，其他環境（GitHub Pages 等）使用 localStorage ──
+  const isClaudeEnv = typeof window.storage !== "undefined" &&
+                      typeof window.storage.get === "function";
+
   // ── 從持久化儲存載入資料 ──
   useEffect(() => {
     (async () => {
       try {
-        const res = await window.storage.get("rcw_schedule_v1");
-        if (res?.value) {
-          const d = JSON.parse(res.value);
-          if (d.employees) setEmployees(d.employees);
-          if (d.shiftDefs) setShiftDefs(d.shiftDefs);
-          if (d.schedules) setSchedules(d.schedules);
+        let data = null;
+        if (isClaudeEnv) {
+          // Claude artifact 環境
+          const res = await window.storage.get("rcw_schedule_v1");
+          if (res?.value) data = JSON.parse(res.value);
+        } else {
+          // GitHub Pages / 本機等一般瀏覽器環境
+          const raw = localStorage.getItem("rcw_schedule_v1");
+          if (raw) data = JSON.parse(raw);
+        }
+        if (data) {
+          if (data.employees) setEmployees(data.employees);
+          if (data.shiftDefs) setShiftDefs(data.shiftDefs);
+          if (data.schedules) setSchedules(data.schedules);
         }
       } catch {
-        // 無儲存資料時使用預設值，靜默忽略錯誤
+        // 無儲存資料或解析失敗，使用預設值
       }
       setReady(true);
     })();
@@ -2182,14 +2173,31 @@ function App() {
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  /** 儲存至持久化儲存 */
+  /**
+   * 儲存至持久化儲存
+   * - Claude artifact 環境：使用 window.storage（跨 session 保留）
+   * - GitHub Pages / 本機環境：使用 localStorage
+   */
   const persist = useCallback(
     (emp, sd, sch) => {
-      window.storage
-        .set("rcw_schedule_v1", JSON.stringify({ employees: emp, shiftDefs: sd, schedules: sch }))
-        .catch(() => {}); // 靜默忽略儲存錯誤
+      const data = JSON.stringify({
+        employees: emp,
+        shiftDefs: sd,
+        schedules: sch,
+      });
+      try {
+        if (isClaudeEnv) {
+          // Claude artifact：非同步儲存，錯誤靜默忽略
+          window.storage.set("rcw_schedule_v1", data).catch(() => {});
+        } else {
+          // 一般瀏覽器：localStorage 同步儲存
+          localStorage.setItem("rcw_schedule_v1", data);
+        }
+      } catch {
+        // 儲存失敗（例如無痕模式 localStorage 被封鎖），靜默忽略
+      }
     },
-    []
+    [isClaudeEnv]
   );
 
   // ── 確保切換月份時有空白資料 ──
@@ -2206,20 +2214,20 @@ function App() {
   // ── 更新某員工某天的班別 ──
   const onUpdate = useCallback(
     (empId, dayIdx, shift) => {
+      // ★ 只做純粹的狀態更新，不在 updater 內呼叫 side effect（persist）
+      // ★ persist 由下方的 useEffect 監聽 schedules 變化後自動觸發
       setSchedules((prev) => {
         const empShifts = [
           ...(prev[key]?.[empId] || Array(daysInMonth(year, month)).fill("-")),
         ];
         empShifts[dayIdx] = shift;
-        const updated = {
+        return {
           ...prev,
           [key]: { ...prev[key], [empId]: empShifts },
         };
-        persist(employees, shiftDefs, updated);
-        return updated;
       });
     },
-    [key, year, month, employees, shiftDefs, persist]
+    [key, year, month]
   );
 
   // ── 員工/班別/完整資料的更新函數 ──
@@ -2251,21 +2259,24 @@ function App() {
   const onAddSchedule = useCallback(
     (yr, mo, empMap, wasOverwrite = false) => {
       const k = monthKey(yr, mo);
+      // ★ updater 內只做純資料操作，persist 交由 useEffect 處理
       setSchedules((prev) => {
-        // 若為覆蓋，先用解構把舊月份從物件中移除，再寫入新資料
-        // 效果：徹底清空舊班表 → 寫入新班表（而非 merge）
         const { [k]: _old, ...rest } = prev;
-        const updated = { ...rest, [k]: empMap };
-        persist(employees, shiftDefs, updated);
-        return updated;
+        return { ...rest, [k]: empMap };
       });
-      // 轉入完成後自動切換到該月班表
       setYear(yr);
       setMonth(mo);
       setTab("schedule");
     },
-    [employees, shiftDefs, persist]
+    []
   );
+
+  // ── 自動 persist：schedules/employees/shiftDefs 任一變化時儲存 ──
+  // ★ 把 side effect 從 state updater 移到這裡，解決 React StrictMode 雙呼叫問題
+  useEffect(() => {
+    if (!ready) return; // 初始載入完成前不儲存（避免覆蓋載入中的資料）
+    persist(employees, shiftDefs, schedules);
+  }, [schedules, employees, shiftDefs, ready]);
 
   // ── 月份切換 ──
   const prevMonth = () => {

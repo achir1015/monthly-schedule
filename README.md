@@ -30,3 +30,18 @@ PDF轉入月份班表   https://achir1015.github.io/monthly-schedule/
 
 | 單檔部署 | `index.html` 直接雙擊或 GitHub Pages 使用 |
 
+GitHub Pages 已更新，但瀏覽器還在讀舊版。
+解決方法（擇一）：
+方法一：強制重新整理（最快）
+Windows：Ctrl + Shift + R
+Mac：    Cmd + Shift + R
+方法二：無痕視窗開啟
+
+Chrome 右上角選單 → 新增無痕式視窗
+輸入網址 achir1015.github.io/monthly-schedule/
+
+方法三：清除快取
+
+Chrome 網址列按 🔒 鎖頭圖示
+或按 F12 → Network → 勾選 "Disable cache" → 重新整理
+

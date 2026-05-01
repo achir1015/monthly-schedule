@@ -2127,8 +2127,9 @@ function App() {
   const [schedules, setSchedules] = useState(buildInitialSchedule);
 
   // UI 狀態
-  const [year, setYear]     = useState(2026);
-  const [month, setMonth]   = useState(4); // 預設顯示最舊的已有月份
+  // 預設顯示當下系統月份（開啟即到當月）
+  const [year, setYear]     = useState(() => new Date().getFullYear());
+  const [month, setMonth]   = useState(() => new Date().getMonth() + 1);
   const [tab, setTab]       = useState("schedule");
   const [ready, setReady]   = useState(false); // 資料是否載入完成
   // 版面模式：auto 偵測視窗寬度，可手動覆蓋

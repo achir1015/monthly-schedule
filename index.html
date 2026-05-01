@@ -4,94 +4,50 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>月班表管理系統｜呼吸照護病房</title>
-  <meta name="description" content="RCW 病房助理月班表線上管理系統，支援 PDF 匯入、班別修改、XML 備份。" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗓️</text></svg>" />
-
-  <!-- Google Fonts：思源黑體（繁中）-->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📅</text></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
-
   <style>
-    *, *::before, *::after { box-sizing: border-box; }
-    html { font-size: 16px; }
-    body {
-      margin: 0; padding: 0;
-      font-family: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif;
-      background: #f3f4f6; color: #1f2937;
-      -webkit-font-smoothing: antialiased;
-    }
-    #loading-screen {
-      position: fixed; inset: 0;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      background: linear-gradient(135deg, #0f4c75, #1b6ca8);
-      color: #fff; z-index: 9999; gap: 16px;
-      transition: opacity 0.4s ease;
-    }
-    #loading-screen.hidden { opacity: 0; pointer-events: none; }
-    .loading-dots { display: flex; gap: 8px; }
-    .loading-dots span {
-      width: 10px; height: 10px; border-radius: 50%;
-      background: rgba(255,255,255,0.8);
-      animation: bounce 1.2s infinite;
-    }
-    .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
-    .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes bounce {
-      0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; }
-      40%            { transform: scale(1);   opacity: 1;   }
-    }
-    #root { min-height: 100vh; }
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track  { background: #f1f5f9; }
-    ::-webkit-scrollbar-thumb  { background: #94a3b8; border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: #64748b; }
-    button, label, select { touch-action: manipulation; }
-    @media print { #loading-screen { display: none; } body { background: #fff; } }
+    *,*::before,*::after{box-sizing:border-box}
+    html{font-size:16px}
+    body{margin:0;padding:0;font-family:"Noto Sans TC","Microsoft JhengHei","PingFang TC",sans-serif;background:#f3f4f6;color:#1f2937;-webkit-font-smoothing:antialiased}
+    #loading-screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#0f4c75,#1b6ca8);color:#fff;z-index:9999;gap:16px;transition:opacity .4s ease}
+    #loading-screen.hidden{opacity:0;pointer-events:none}
+    .loading-dots{display:flex;gap:8px}
+    .loading-dots span{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.8);animation:bounce 1.2s infinite}
+    .loading-dots span:nth-child(2){animation-delay:.2s}
+    .loading-dots span:nth-child(3){animation-delay:.4s}
+    @keyframes bounce{0%,80%,100%{transform:scale(.6);opacity:.5}40%{transform:scale(1);opacity:1}}
+    #root{min-height:100vh}
+    ::-webkit-scrollbar{width:6px;height:6px}
+    ::-webkit-scrollbar-track{background:#f1f5f9}
+    ::-webkit-scrollbar-thumb{background:#94a3b8;border-radius:3px}
+    button,label,select{touch-action:manipulation}
+    @media print{#loading-screen{display:none}body{background:#fff}}
   </style>
 </head>
 <body>
 
-  <!-- 載入中畫面 -->
-  <div id="loading-screen">
-    <div style="font-size:44px">🗓️</div>
-    <div style="font-size:20px;font-weight:700;letter-spacing:1px">月班表管理系統</div>
-    <div style="font-size:14px;opacity:0.75">呼吸照護病房（RCW）・病房助理</div>
-    <div class="loading-dots"><span></span><span></span><span></span></div>
-  </div>
+<div id="loading-screen">
+  <div style="font-size:44px">📅</div>
+  <div style="font-size:20px;font-weight:700;letter-spacing:1px">月班表管理系統</div>
+  <div style="font-size:14px;opacity:.75">呼吸照護病房（RCW）・病房助理</div>
+  <div class="loading-dots"><span></span><span></span><span></span></div>
+</div>
 
-  <div id="root"></div>
+<div id="root"></div>
 
-  <!-- React 18（CDN）-->
-  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
-  <!-- ReactDOM 18（CDN）-->
-  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<!-- React 18 -->
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<!-- ReactDOM 18 -->
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<!-- Babel Standalone（JSX 轉譯，僅首次載入需要）-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
 
-  <!-- 主程式（已預編譯為純 JS，無需 Babel）-->
-  <script>
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _objectWithoutProperties(e, t) { if (null == e) return {}; var o, r, i = _objectWithoutPropertiesLoose(e, t); if (Object.getOwnPropertySymbols) { var n = Object.getOwnPropertySymbols(e); for (r = 0; r < n.length; r++) o = n[r], -1 === t.indexOf(o) && {}.propertyIsEnumerable.call(e, o) && (i[o] = e[o]); } return i; }
-function _objectWithoutPropertiesLoose(r, e) { if (null == r) return {}; var t = {}; for (var n in r) if ({}.hasOwnProperty.call(r, n)) { if (-1 !== e.indexOf(n)) continue; t[n] = r[n]; } return t; }
-function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i.return) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
-function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
-function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
-function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
-function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
-function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
-function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
-function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
-function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
-function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
-function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t.return && (u = t.return(), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
-function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+<!-- 主程式：JSX 直接內嵌，Babel 在瀏覽器端轉譯 -->
+<!-- 優點：無跨來源問題、本機雙擊可用、GitHub Pages 直接部署 -->
+<script type="text/babel" data-presets="react">
 /**
  * 月班表線上管理系統
  * - 資料以 XML 格式備份/還原
@@ -100,118 +56,47 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
  * - 預載入 115年5月（西元2026年）班表（由 PDF 轉入）
  */
 // React Hooks 由全域 React 物件取得（供 Babel standalone 使用）
-var _React = React,
-  useState = _React.useState,
-  useEffect = _React.useEffect,
-  useCallback = _React.useCallback;
+const { useState, useEffect, useCallback } = React;
 
 // ═══════════════════════════════════════
 // 一、常數定義
 // ═══════════════════════════════════════
 
 /** 星期名稱（0=日...6=六） */
-var WEEKDAY = ["日", "一", "二", "三", "四", "五", "六"];
+const WEEKDAY = ["日", "一", "二", "三", "四", "五", "六"];
 
 /** 民國年換算基數：西元年 - 1911 = 民國年 */
-var ROC_OFFSET = 1911;
+const ROC_OFFSET = 1911;
 
 /** 預設班別設定（醫療慣例顏色） */
-var DEFAULT_SHIFT_DEFS = [{
-  code: "D",
-  name: "白班",
-  fg: "#1e3a5f",
-  bg: "#90CAF9"
-}, {
-  code: "E",
-  name: "小夜",
-  fg: "#7c2d12",
-  bg: "#FED7AA"
-}, {
-  code: "N",
-  name: "大夜",
-  fg: "#ffffff",
-  bg: "#3949AB"
-}, {
-  code: "OFF",
-  name: "例休",
-  fg: "#6b7280",
-  bg: "#E5E7EB"
-}, {
-  code: "S",
-  name: "特休",
-  fg: "#065f46",
-  bg: "#D1FAE5"
-}];
+const DEFAULT_SHIFT_DEFS = [
+  { code: "D",   name: "白班", fg: "#1e3a5f", bg: "#90CAF9" },
+  { code: "E",   name: "小夜", fg: "#7c2d12", bg: "#FED7AA" },
+  { code: "N",   name: "大夜", fg: "#ffffff", bg: "#3949AB" },
+  { code: "OFF", name: "例休", fg: "#6b7280", bg: "#E5E7EB" },
+  { code: "S",   name: "特休", fg: "#065f46", bg: "#D1FAE5" },
+];
 
 /** 預設員工資料（由 RCW-115年5月病房助理班表 PDF 轉入） */
-var DEFAULT_EMPLOYEES = [{
-  id: "N0935",
-  name: "陳志偉",
-  email: "",
-  license: "丙照",
-  startDate: ""
-}, {
-  id: "N0960",
-  name: "吳玉柱",
-  email: "achir1015@gmail.com",
-  license: "照顧服務員",
-  startDate: "2012-08-19"
-}, {
-  id: "N1512",
-  name: "王詩捷",
-  email: "",
-  license: "丙照",
-  startDate: ""
-}, {
-  id: "N1564",
-  name: "蔣可薇",
-  email: "",
-  license: "丙照",
-  startDate: ""
-}, {
-  id: "N1642",
-  name: "梁桂清",
-  email: "",
-  license: "丙照",
-  startDate: ""
-}, {
-  id: "N1764",
-  name: "李漢銓",
-  email: "",
-  license: "",
-  startDate: ""
-}, {
-  id: "N1042",
-  name: "徐韶璟",
-  email: "",
-  license: "丙照",
-  startDate: ""
-}, {
-  id: "N1616",
-  name: "李忠坪",
-  email: "",
-  license: "丙照",
-  startDate: ""
-}, {
-  id: "N1918",
-  name: "潘全偉",
-  email: "",
-  license: "",
-  startDate: ""
-}, {
-  id: "N1919",
-  name: "黃俊騰",
-  email: "",
-  license: "",
-  startDate: ""
-}];
+const DEFAULT_EMPLOYEES = [
+  { id: "N0935", name: "陳志偉", email: "",                    license: "丙照",       startDate: "" },
+  { id: "N0960", name: "吳玉柱", email: "achir1015@gmail.com", license: "照顧服務員", startDate: "2012-08-19" },
+  { id: "N1512", name: "王詩捷", email: "",                    license: "丙照",       startDate: "" },
+  { id: "N1564", name: "蔣可薇", email: "",                    license: "丙照",       startDate: "" },
+  { id: "N1642", name: "梁桂清", email: "",                    license: "丙照",       startDate: "" },
+  { id: "N1764", name: "李漢銓", email: "",                    license: "",           startDate: "" },
+  { id: "N1042", name: "徐韶璟", email: "",                    license: "丙照",       startDate: "" },
+  { id: "N1616", name: "李忠坪", email: "",                    license: "丙照",       startDate: "" },
+  { id: "N1918", name: "潘全偉", email: "",                    license: "",           startDate: "" },
+  { id: "N1919", name: "黃俊騰", email: "",                    license: "",           startDate: "" },
+];
 
 /**
  * 115年4月班表（西元2026年4月），由 PDF 轉入
  * 格式：每個字串為 4/1 ~ 4/30 共 30 天的班別，以逗號分隔
  * 特殊說明：E/學=學習小夜→E、N/學=學習大夜→N
  */
-var PDF_SCHEDULE_2026_4 = {
+const PDF_SCHEDULE_2026_4 = {
   N0935: "D,D,D,OFF,D,D,E,OFF,D,D,OFF,D,D,OFF,OFF,E,E,E,OFF,OFF,OFF,D,D,D,D,OFF,OFF,D,D,D",
   N0960: "N,OFF,N,N,N,OFF,N,N,OFF,N,N,OFF,OFF,N,OFF,E,N,N,N,N,OFF,N,N,N,N,OFF,N,N,OFF,OFF",
   N1512: "E,E,E,N,OFF,E,E,E,E,OFF,OFF,E,E,N,N,N,OFF,OFF,OFF,N,N,N,OFF,OFF,N,N,OFF,OFF,D,D",
@@ -221,7 +106,7 @@ var PDF_SCHEDULE_2026_4 = {
   N1042: "OFF,N,N,OFF,OFF,D,D,D,D,OFF,D,D,D,D,D,OFF,OFF,OFF,OFF,E,E,OFF,E,E,E,E,OFF,N,N,N",
   N1616: "OFF,D,D,D,OFF,OFF,D,D,D,E,OFF,OFF,OFF,E,E,OFF,D,D,D,D,OFF,E,E,OFF,D,D,D,D,D,OFF",
   N1918: "D,D,OFF,D,D,OFF,D,D,OFF,D,OFF,OFF,D,D,D,D,OFF,OFF,D,D,D,OFF,D,D,E,E,E,OFF,OFF,D",
-  N1919: "D,OFF,N,N,N,N,N,OFF,OFF,D,D,OFF,OFF,D,D,D,D,OFF,OFF,D,D,D,D,D,OFF,D,D,D,OFF,OFF"
+  N1919: "D,OFF,N,N,N,N,N,OFF,OFF,D,D,OFF,OFF,D,D,D,D,OFF,OFF,D,D,D,D,D,OFF,D,D,D,OFF,OFF",
 };
 
 /**
@@ -229,7 +114,7 @@ var PDF_SCHEDULE_2026_4 = {
  * 格式：每個字串為 5/1 ~ 5/31 共 31 天的班別，以逗號分隔
  * 特殊說明：E/學 = 學習小夜，統一記錄為 E
  */
-var PDF_SCHEDULE_2026_5 = {
+const PDF_SCHEDULE_2026_5 = {
   N0935: "OFF,D,D,D,OFF,D,D,D,OFF,D,D,D,D,OFF,E,E,E,E,OFF,OFF,D,D,OFF,D,D,OFF,D,D,D,OFF,OFF",
   N0960: "N,N,OFF,N,N,N,OFF,D,OFF,N,N,N,N,OFF,OFF,OFF,N,N,N,N,N,OFF,OFF,N,N,N,N,OFF,N,N,OFF",
   N1512: "E,E,OFF,OFF,OFF,OFF,E,E,E,E,E,OFF,E,E,E,E,E,OFF,N,N,N,N,N,OFF,OFF,E,E,E,OFF,OFF,E",
@@ -239,7 +124,7 @@ var PDF_SCHEDULE_2026_5 = {
   N1042: "OFF,OFF,D,D,D,D,D,OFF,D,D,OFF,OFF,D,D,D,D,OFF,D,D,D,D,OFF,D,OFF,D,D,N,N,OFF,OFF,D",
   N1616: "D,D,OFF,E,E,OFF,OFF,D,D,OFF,D,D,D,OFF,D,D,D,D,OFF,OFF,OFF,D,D,D,OFF,D,D,D,D,OFF,OFF",
   N1918: "D,OFF,OFF,D,D,D,D,D,OFF,OFF,D,D,OFF,D,D,OFF,D,E,E,E,OFF,OFF,E,E,E,OFF,OFF,D,D,D,D",
-  N1919: "E,E,E,OFF,N,N,N,N,N,OFF,OFF,OFF,N,N,N,OFF,OFF,D,D,D,D,D,OFF,OFF,D,D,OFF,OFF,D,D,N"
+  N1919: "E,E,E,OFF,N,N,N,N,N,OFF,OFF,OFF,N,N,N,OFF,OFF,D,D,D,D,D,OFF,OFF,D,D,OFF,OFF,D,D,N",
 };
 
 // ═══════════════════════════════════════
@@ -247,19 +132,13 @@ var PDF_SCHEDULE_2026_5 = {
 // ═══════════════════════════════════════
 
 /** 取得某年月的天數 */
-var daysInMonth = function daysInMonth(y, m) {
-  return new Date(y, m, 0).getDate();
-};
+const daysInMonth = (y, m) => new Date(y, m, 0).getDate();
 
 /** 西元年 → 民國年 */
-var toROC = function toROC(y) {
-  return y - ROC_OFFSET;
-};
+const toROC = (y) => y - ROC_OFFSET;
 
 /** 產生月份資料 key，例如 "2026-5" */
-var monthKey = function monthKey(y, m) {
-  return "".concat(y, "-").concat(m);
-};
+const monthKey = (y, m) => `${y}-${m}`;
 
 /**
  * 將單一月份的 PDF 班表字串轉換為資料結構
@@ -268,12 +147,12 @@ var monthKey = function monthKey(y, m) {
  * @param {object} pdfData 格式：{ 員工id: "D,OFF,N,..." }
  */
 function buildMonthMap(year, month, pdfData) {
-  var days = daysInMonth(year, month);
-  var empMap = {};
-  DEFAULT_EMPLOYEES.forEach(function (emp) {
-    var raw = pdfData[emp.id];
+  const days = daysInMonth(year, month);
+  const empMap = {};
+  DEFAULT_EMPLOYEES.forEach((emp) => {
+    const raw = pdfData[emp.id];
     if (raw) {
-      var arr = raw.split(",");
+      const arr = raw.split(",");
       while (arr.length < days) arr.push("-");
       empMap[emp.id] = arr.slice(0, days);
     } else {
@@ -288,7 +167,10 @@ function buildMonthMap(year, month, pdfData) {
  * 資料結構：{ "2026-4": {...}, "2026-5": {...} }
  */
 function buildInitialSchedule() {
-  return _defineProperty(_defineProperty({}, monthKey(2026, 4), buildMonthMap(2026, 4, PDF_SCHEDULE_2026_4)), monthKey(2026, 5), buildMonthMap(2026, 5, PDF_SCHEDULE_2026_5));
+  return {
+    [monthKey(2026, 4)]: buildMonthMap(2026, 4, PDF_SCHEDULE_2026_4),
+    [monthKey(2026, 5)]: buildMonthMap(2026, 5, PDF_SCHEDULE_2026_5),
+  };
 }
 
 // ═══════════════════════════════════════
@@ -299,38 +181,43 @@ function buildInitialSchedule() {
  * 將系統資料序列化為 XML 字串
  * @param {{ employees, shiftDefs, schedules }} data
  */
-function serializeToXml(_ref2) {
-  var employees = _ref2.employees,
-    shiftDefs = _ref2.shiftDefs,
-    schedules = _ref2.schedules;
+function serializeToXml({ employees, shiftDefs, schedules }) {
   // XML 特殊字元逸出
-  var esc = function esc(s) {
-    return String(s || "").replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  };
-  var lines = ['<?xml version="1.0" encoding="UTF-8"?>', '<scheduleSystem>', '  <employees>'];
-  employees.forEach(function (e) {
-    return lines.push("    <employee id=\"".concat(esc(e.id), "\" name=\"").concat(esc(e.name), "\" ") + "email=\"".concat(esc(e.email), "\" license=\"").concat(esc(e.license), "\" startDate=\"").concat(esc(e.startDate), "\"/>"));
-  });
+  const esc = (s) =>
+    String(s || "")
+      .replace(/&/g, "&amp;")
+      .replace(/"/g, "&quot;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+
+  const lines = [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<scheduleSystem>',
+    '  <employees>',
+  ];
+  employees.forEach((e) =>
+    lines.push(
+      `    <employee id="${esc(e.id)}" name="${esc(e.name)}" ` +
+        `email="${esc(e.email)}" license="${esc(e.license)}" startDate="${esc(e.startDate)}"/>`
+    )
+  );
   lines.push("  </employees>", "  <shiftTypes>");
-  shiftDefs.forEach(function (s) {
-    return lines.push("    <shiftType code=\"".concat(esc(s.code), "\" name=\"").concat(esc(s.name), "\" ") + "fg=\"".concat(esc(s.fg), "\" bg=\"").concat(esc(s.bg), "\"/>"));
-  });
+  shiftDefs.forEach((s) =>
+    lines.push(
+      `    <shiftType code="${esc(s.code)}" name="${esc(s.name)}" ` +
+        `fg="${esc(s.fg)}" bg="${esc(s.bg)}"/>`
+    )
+  );
   lines.push("  </shiftTypes>", "  <schedules>");
-  Object.entries(schedules).forEach(function (_ref3) {
-    var _ref4 = _slicedToArray(_ref3, 2),
-      key = _ref4[0],
-      empMap = _ref4[1];
-    var _key$split = key.split("-"),
-      _key$split2 = _slicedToArray(_key$split, 2),
-      y = _key$split2[0],
-      m = _key$split2[1];
-    lines.push("    <schedule year=\"".concat(y, "\" month=\"").concat(m, "\">"));
-    Object.entries(empMap).forEach(function (_ref5) {
-      var _ref6 = _slicedToArray(_ref5, 2),
-        empId = _ref6[0],
-        shifts = _ref6[1];
-      shifts.forEach(function (sh, i) {
-        if (sh && sh !== "-") lines.push("      <entry empId=\"".concat(esc(empId), "\" day=\"").concat(i + 1, "\" shift=\"").concat(esc(sh), "\"/>"));
+  Object.entries(schedules).forEach(([key, empMap]) => {
+    const [y, m] = key.split("-");
+    lines.push(`    <schedule year="${y}" month="${m}">`);
+    Object.entries(empMap).forEach(([empId, shifts]) => {
+      shifts.forEach((sh, i) => {
+        if (sh && sh !== "-")
+          lines.push(
+            `      <entry empId="${esc(empId)}" day="${i + 1}" shift="${esc(sh)}"/>`
+          );
       });
     });
     lines.push("    </schedule>");
@@ -345,49 +232,45 @@ function serializeToXml(_ref2) {
  * @returns {{ employees, shiftDefs, schedules }}
  */
 function parseFromXml(xmlStr) {
-  var doc = new DOMParser().parseFromString(xmlStr, "text/xml");
+  const doc = new DOMParser().parseFromString(xmlStr, "text/xml");
   if (doc.querySelector("parsererror")) throw new Error("XML 格式錯誤");
-  var employees = _toConsumableArray(doc.querySelectorAll("employee")).map(function (el) {
-    return {
-      id: el.getAttribute("id") || "",
-      name: el.getAttribute("name") || "",
-      email: el.getAttribute("email") || "",
-      license: el.getAttribute("license") || "",
-      startDate: el.getAttribute("startDate") || ""
-    };
-  });
-  var shiftDefs = _toConsumableArray(doc.querySelectorAll("shiftType")).map(function (el) {
-    return {
-      code: el.getAttribute("code") || "",
-      name: el.getAttribute("name") || "",
-      fg: el.getAttribute("fg") || "#333",
-      bg: el.getAttribute("bg") || "#eee"
-    };
-  });
-  var schedules = {};
-  _toConsumableArray(doc.querySelectorAll("schedule")).forEach(function (sch) {
-    var y = sch.getAttribute("year");
-    var m = sch.getAttribute("month");
-    var key = "".concat(y, "-").concat(m);
-    var days = daysInMonth(+y, +m);
+
+  const employees = [...doc.querySelectorAll("employee")].map((el) => ({
+    id: el.getAttribute("id") || "",
+    name: el.getAttribute("name") || "",
+    email: el.getAttribute("email") || "",
+    license: el.getAttribute("license") || "",
+    startDate: el.getAttribute("startDate") || "",
+  }));
+
+  const shiftDefs = [...doc.querySelectorAll("shiftType")].map((el) => ({
+    code: el.getAttribute("code") || "",
+    name: el.getAttribute("name") || "",
+    fg: el.getAttribute("fg") || "#333",
+    bg: el.getAttribute("bg") || "#eee",
+  }));
+
+  const schedules = {};
+  [...doc.querySelectorAll("schedule")].forEach((sch) => {
+    const y = sch.getAttribute("year");
+    const m = sch.getAttribute("month");
+    const key = `${y}-${m}`;
+    const days = daysInMonth(+y, +m);
     schedules[key] = {};
     // 先為每個員工建立空陣列
-    employees.forEach(function (e) {
+    employees.forEach((e) => {
       schedules[key][e.id] = Array(days).fill("-");
     });
     // 再填入 XML 內的班別記錄
-    _toConsumableArray(sch.querySelectorAll("entry")).forEach(function (en) {
-      var id = en.getAttribute("empId");
-      var day = +en.getAttribute("day") - 1; // 轉為 0-based index
-      var sh = en.getAttribute("shift");
+    [...sch.querySelectorAll("entry")].forEach((en) => {
+      const id = en.getAttribute("empId");
+      const day = +en.getAttribute("day") - 1; // 轉為 0-based index
+      const sh = en.getAttribute("shift");
       if (schedules[key][id] && day >= 0) schedules[key][id][day] = sh;
     });
   });
-  return {
-    employees: employees,
-    shiftDefs: shiftDefs,
-    schedules: schedules
-  };
+
+  return { employees, shiftDefs, schedules };
 }
 
 // ═══════════════════════════════════════
@@ -395,67 +278,59 @@ function parseFromXml(xmlStr) {
 // ═══════════════════════════════════════
 
 /** 按鈕樣式 */
-var btn = function btn(bg) {
-  var fg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "#fff";
-  return {
-    padding: "7px 14px",
-    background: bg,
-    color: fg,
-    border: "none",
-    borderRadius: 6,
-    cursor: "pointer",
-    fontSize: 18,
-    fontWeight: 500,
-    fontFamily: "inherit"
-  };
-};
+const btn = (bg, fg = "#fff") => ({
+  padding: "7px 14px",
+  background: bg,
+  color: fg,
+  border: "none",
+  borderRadius: 6,
+  cursor: "pointer",
+  fontSize: 18,
+  fontWeight: 500,
+  fontFamily: "inherit",
+});
 
 /** 文字輸入框樣式 */
-var inp = function inp() {
-  var disabled = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-  return {
-    width: "100%",
-    padding: "7px 10px",
-    borderRadius: 6,
-    border: "1px solid #d1d5db",
-    fontSize: 18,
-    boxSizing: "border-box",
-    background: disabled ? "#f9fafb" : "#fff",
-    color: "#1f2937",
-    fontFamily: "inherit"
-  };
-};
+const inp = (disabled = false) => ({
+  width: "100%",
+  padding: "7px 10px",
+  borderRadius: 6,
+  border: "1px solid #d1d5db",
+  fontSize: 18,
+  boxSizing: "border-box",
+  background: disabled ? "#f9fafb" : "#fff",
+  color: "#1f2937",
+  fontFamily: "inherit",
+});
 
 /** 標籤樣式 */
-var lbl = {
+const lbl = {
   display: "block",
   fontSize: 17,
   color: "#6b7280",
   marginBottom: 4,
-  fontWeight: 500
+  fontWeight: 500,
 };
 
 /** 卡片樣式 */
-var card = {
+const card = {
   background: "#fff",
   borderRadius: 12,
   padding: 20,
   border: "1px solid #e5e7eb",
-  boxShadow: "0 1px 3px rgba(0,0,0,0.06)"
+  boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
 };
 
 /** 訊息框樣式 */
-var msg = function msg(ok) {
-  return {
-    marginTop: 12,
-    padding: "8px 14px",
-    borderRadius: 6,
-    fontSize: 18,
-    background: ok ? "#f0fdf4" : "#fef2f2",
-    color: ok ? "#15803d" : "#b91c1c",
-    border: "1px solid ".concat(ok ? "#bbf7d0" : "#fecaca")
-  };
-};
+const msg = (ok) => ({
+  marginTop: 12,
+  padding: "8px 14px",
+  borderRadius: 6,
+  fontSize: 18,
+  background: ok ? "#f0fdf4" : "#fef2f2",
+  color: ok ? "#15803d" : "#b91c1c",
+  border: `1px solid ${ok ? "#bbf7d0" : "#fecaca"}`,
+});
 
 // ═══════════════════════════════════════
 // 五、班表頁籤元件
@@ -467,910 +342,858 @@ var msg = function msg(ok) {
  * - 欄 = 日期（1~31）
  * - 點擊格子 → 展開班別選擇列
  */
-function ScheduleTab(_ref7) {
-  var _employees$find;
-  var employees = _ref7.employees,
-    shiftDefs = _ref7.shiftDefs,
-    schedule = _ref7.schedule,
-    year = _ref7.year,
-    month = _ref7.month,
-    onUpdate = _ref7.onUpdate;
+function ScheduleTab({ employees, shiftDefs, schedule, year, month, onUpdate }) {
   // 目前正在編輯的儲存格 { empId, dayIdx }
-  var _useState = useState(null),
-    _useState2 = _slicedToArray(_useState, 2),
-    editing = _useState2[0],
-    setEditing = _useState2[1];
-  var days = daysInMonth(year, month);
-  var dayArr = Array.from({
-    length: days
-  }, function (_, i) {
-    return i;
-  }); // [0,1,...,30]
+  const [editing, setEditing] = useState(null);
+
+  const days = daysInMonth(year, month);
+  const dayArr = Array.from({ length: days }, (_, i) => i); // [0,1,...,30]
 
   /** 查找班別定義，找不到時回傳預設 */
-  var findSt = function findSt(code) {
-    return shiftDefs.find(function (s) {
-      return s.code === code;
-    }) || {
-      code: code,
+  const findSt = (code) =>
+    shiftDefs.find((s) => s.code === code) || {
+      code,
       fg: "#9ca3af",
       bg: "#f3f4f6",
-      name: code
+      name: code,
     };
-  };
 
   /** 計算某一天每種班別的人數 */
-  var dayStat = function dayStat(di) {
-    var c = {};
-    shiftDefs.forEach(function (s) {
+  const dayStat = (di) => {
+    const c = {};
+    shiftDefs.forEach((s) => {
       c[s.code] = 0;
     });
-    employees.forEach(function (e) {
-      var sh = (schedule[e.id] || [])[di] || "-";
+    employees.forEach((e) => {
+      const sh = (schedule[e.id] || [])[di] || "-";
       if (c[sh] !== undefined) c[sh]++;
     });
     return c;
   };
-  return /*#__PURE__*/React.createElement("div", {
-    style: card
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      marginBottom: 12
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      flexWrap: "wrap",
-      gap: 6,
-      marginBottom: 8,
-      alignItems: "center"
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: 17,
-      color: "#6b7280",
-      marginRight: 2
-    }
-  }, "\u73ED\u5225\uFF1A"), shiftDefs.map(function (s) {
-    return /*#__PURE__*/React.createElement("span", {
-      key: s.code,
-      style: {
-        padding: "2px 10px",
-        borderRadius: 4,
-        fontSize: 17,
-        fontWeight: 500,
-        color: s.fg,
-        background: s.bg
-      }
-    }, s.code, "\u3000", s.name);
-  })), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      alignItems: "center",
-      gap: 8,
-      flexWrap: "wrap",
-      background: "#eff6ff",
-      border: "1px solid #bfdbfe",
-      borderRadius: 6,
-      padding: "6px 12px"
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: 17,
-      color: "#1d4ed8"
-    }
-  }, "\u270F\uFE0F ", /*#__PURE__*/React.createElement("strong", null, "\u5982\u4F55\u4FEE\u6539\u73ED\u5225\uFF1A")), /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: 17,
-      color: "#1d4ed8"
-    }
-  }, "\u9EDE\u64CA\u4EFB\u610F", /*#__PURE__*/React.createElement("strong", null, "\u73ED\u5225\u683C\u5B50")), /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: 17,
-      color: "#6b7280"
-    }
-  }, "\u2192"), /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: 17,
-      color: "#1d4ed8"
-    }
-  }, "\u8A72\u54E1\u5DE5\u5217\u4E0B\u65B9\u5C55\u958B", /*#__PURE__*/React.createElement("strong", null, "\u73ED\u5225\u9078\u55AE")), /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: 17,
-      color: "#6b7280"
-    }
-  }, "\u2192"), /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: 17,
-      color: "#1d4ed8"
-    }
-  }, "\u9EDE\u9078\u65B0\u73ED\u5225\u6216\u300C\u6E05\u9664\u300D"), editing && /*#__PURE__*/React.createElement("span", {
-    style: {
-      marginLeft: "auto",
-      padding: "2px 10px",
-      background: "#dbeafe",
-      borderRadius: 4,
-      fontSize: 17,
-      color: "#1e40af",
-      fontWeight: 500
-    }
-  }, "\u7DE8\u8F2F\u4E2D\uFF1A", (_employees$find = employees.find(function (e) {
-    return e.id === editing.empId;
-  })) === null || _employees$find === void 0 ? void 0 : _employees$find.name, " \u7B2C", editing.dayIdx + 1, "\u65E5"))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      overflowX: "auto"
-    }
-  }, /*#__PURE__*/React.createElement("table", {
-    style: {
-      borderCollapse: "collapse",
-      fontSize: 17
-    }
-  }, /*#__PURE__*/React.createElement("colgroup", null, /*#__PURE__*/React.createElement("col", {
-    style: {
-      minWidth: 108
-    }
-  }), dayArr.map(function (di) {
-    return /*#__PURE__*/React.createElement("col", {
-      key: di,
-      style: {
-        width: 30
-      }
-    });
-  }), /*#__PURE__*/React.createElement("col", {
-    style: {
-      minWidth: 70
-    }
-  })), /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", {
-    style: {
-      padding: "6px 10px",
-      textAlign: "left",
-      background: "#1b6ca8",
-      color: "#fff",
-      position: "sticky",
-      left: 0,
-      zIndex: 2,
-      fontSize: 17,
-      borderRadius: "6px 0 0 0"
-    }
-  }, "\u54E1\u5DE5"), dayArr.map(function (di) {
-    var d = di + 1;
-    var dow = new Date(year, month - 1, d).getDay();
-    // 日=紅、六=藍、平日=深藍
-    var bg = dow === 0 ? "#b91c1c" : dow === 6 ? "#1d4ed8" : "#1b6ca8";
-    return /*#__PURE__*/React.createElement("th", {
-      key: di,
-      style: {
-        padding: "2px 1px",
-        textAlign: "center",
-        background: bg,
-        color: "#fff",
-        fontSize: 14
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontWeight: 500
-      }
-    }, d), /*#__PURE__*/React.createElement("div", {
-      style: {
-        opacity: 0.8
-      }
-    }, WEEKDAY[dow]));
-  }), /*#__PURE__*/React.createElement("th", {
-    style: {
-      padding: "6px 4px",
-      background: "#1b6ca8",
-      color: "#fff",
-      textAlign: "center",
-      fontSize: 15,
-      borderRadius: "0 6px 0 0"
-    }
-  }, "\u7D71\u8A08"))), /*#__PURE__*/React.createElement("tbody", null, employees.flatMap(function (emp, ri) {
-    var empShifts = schedule[emp.id] || Array(days).fill("-");
-    // 計算本月白班/小夜/大夜次數
-    var cnt = {
-      D: 0,
-      E: 0,
-      N: 0
-    };
-    empShifts.forEach(function (s) {
-      if (cnt[s] !== undefined) cnt[s]++;
-    });
-    var rowBg = ri % 2 === 0 ? "#fff" : "#f9fafb";
-    var rows = [];
 
-    // ── 員工班表列 ──
-    rows.push(/*#__PURE__*/React.createElement("tr", {
-      key: emp.id,
-      style: {
-        background: rowBg
-      }
-    }, /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: "4px 10px",
-        position: "sticky",
-        left: 0,
-        zIndex: 1,
-        background: rowBg,
-        borderRight: "1px solid #e5e7eb"
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontWeight: 500,
-        color: "#1f2937",
-        fontSize: 18
-      }
-    }, emp.name), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 14,
-        color: "#9ca3af"
-      }
-    }, emp.id)), dayArr.map(function (di) {
-      var sh = empShifts[di] || "-";
-      var st = findSt(sh);
-      var active = (editing === null || editing === void 0 ? void 0 : editing.empId) === emp.id && (editing === null || editing === void 0 ? void 0 : editing.dayIdx) === di;
-      var dow = new Date(year, month - 1, di + 1).getDay();
-      // 週末背景微黃
-      var wkBg = dow === 0 || dow === 6 ? ri % 2 === 0 ? "#fffbeb" : "#fef9e7" : undefined;
-      return /*#__PURE__*/React.createElement("td", {
-        key: di,
-        style: {
-          padding: 2,
-          textAlign: "center",
-          background: active ? "#dbeafe" : wkBg
-        }
-      }, /*#__PURE__*/React.createElement("button", {
-        title: "\u9EDE\u64CA\u4FEE\u6539\u73ED\u5225\n\u54E1\u5DE5\uFF1A".concat(emp.name, "\n\u65E5\u671F\uFF1A").concat(month, "/").concat(di + 1, "\n\u76EE\u524D\uFF1A").concat(sh === "-" ? "（無）" : sh),
-        onClick: function onClick() {
-          return setEditing(active ? null : {
-            empId: emp.id,
-            dayIdx: di
-          });
-        },
-        style: {
-          width: 28,
-          height: 24,
-          borderRadius: 3,
-          border: active ? "2px solid #1b6ca8" : "1px solid transparent",
-          background: active ? "#dbeafe" : sh === "-" ? "#f9fafb" : st.bg,
-          color: sh === "-" ? "#d1d5db" : st.fg,
-          fontSize: 13,
-          fontWeight: 700,
-          cursor: "pointer",
-          fontFamily: "inherit"
-        }
-      }, sh === "-" ? "·" : sh));
-    }), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: "2px 4px",
-        textAlign: "center",
-        fontSize: 14,
-        lineHeight: 1.6,
-        whiteSpace: "nowrap"
-      }
-    }, /*#__PURE__*/React.createElement("span", {
-      style: {
-        color: "#1d4ed8"
-      }
-    }, "\u767D", cnt.D), " ", /*#__PURE__*/React.createElement("span", {
-      style: {
-        color: "#c2410c"
-      }
-    }, "\u591C", cnt.E), " ", /*#__PURE__*/React.createElement("span", {
-      style: {
-        color: "#4338ca"
-      }
-    }, "\u5927", cnt.N))));
-    return rows;
-  })), /*#__PURE__*/React.createElement("tfoot", null, /*#__PURE__*/React.createElement("tr", {
-    style: {
-      borderTop: "2px solid #d1d5db",
-      background: "#f3f4f6"
-    }
-  }, /*#__PURE__*/React.createElement("td", {
-    style: {
-      padding: "4px 10px",
-      fontWeight: 500,
-      fontSize: 15,
-      color: "#6b7280",
-      position: "sticky",
-      left: 0,
-      background: "#f3f4f6",
-      borderRight: "1px solid #e5e7eb",
-      zIndex: 1
-    }
-  }, "\u6BCF\u65E5\u4EBA\u6578"), dayArr.map(function (di) {
-    var stats = dayStat(di);
-    return /*#__PURE__*/React.createElement("td", {
-      key: di,
-      style: {
-        padding: "1px",
-        textAlign: "center",
-        fontSize: 13,
-        lineHeight: 1.4
-      }
-    }, ["D", "E", "N"].filter(function (c) {
-      return stats[c] > 0;
-    }).map(function (c) {
-      var st = findSt(c);
-      // 白色文字的班（如大夜）改用背景色顯示數字
-      var col = st.fg === "#ffffff" ? st.bg : st.fg;
-      return /*#__PURE__*/React.createElement("div", {
-        key: c,
-        style: {
-          fontWeight: 700,
-          color: col
-        }
-      }, stats[c]);
-    }));
-  }), /*#__PURE__*/React.createElement("td", null))))), editing && function () {
-    var editEmp = employees.find(function (e) {
-      return e.id === editing.empId;
-    });
-    var editShifts = schedule[editing.empId] || [];
-    var curSh = editShifts[editing.dayIdx] || "-";
-    var dow = new Date(year, month - 1, editing.dayIdx + 1).getDay();
-    var dowLabel = ["日", "一", "二", "三", "四", "五", "六"][dow];
-    return /*#__PURE__*/React.createElement("div", {
-      style: {
-        marginTop: 8,
-        background: "#eff6ff",
-        border: "2px solid #3b82f6",
-        borderRadius: 10,
-        padding: "14px 16px",
-        display: "flex",
-        alignItems: "center",
-        flexWrap: "wrap",
-        gap: 8
-      }
-    }, /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontSize: 17,
-        fontWeight: 700,
-        color: "#1e40af",
-        marginRight: 6,
-        whiteSpace: "nowrap"
-      }
-    }, "\u270F\uFE0F ", editEmp === null || editEmp === void 0 ? void 0 : editEmp.name, "\u30FB", month, "/", editing.dayIdx + 1, "\uFF08", dowLabel, "\uFF09"), /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontSize: 15,
-        color: "#6b7280",
-        marginRight: 8
-      }
-    }, "\u76EE\u524D\uFF1A", /*#__PURE__*/React.createElement("strong", {
-      style: {
-        color: "#1e3a5f"
-      }
-    }, curSh === "-" ? "（無）" : curSh)), shiftDefs.map(function (st) {
-      return /*#__PURE__*/React.createElement("button", {
-        key: st.code,
-        onClick: function onClick() {
-          onUpdate(editing.empId, editing.dayIdx, st.code);
-          setEditing(null);
-        },
-        style: {
-          padding: "7px 16px",
-          border: curSh === st.code ? "3px solid #1e3a5f" : "2px solid transparent",
-          borderRadius: 6,
-          background: st.bg,
-          color: st.fg,
-          fontSize: 17,
-          fontWeight: 700,
-          cursor: "pointer",
-          fontFamily: "inherit",
-          boxShadow: curSh === st.code ? "0 0 0 2px #93c5fd" : "none"
-        }
-      }, st.code, "\u3000", st.name);
-    }), /*#__PURE__*/React.createElement("button", {
-      onClick: function onClick() {
-        onUpdate(editing.empId, editing.dayIdx, "-");
-        setEditing(null);
-      },
-      style: {
-        padding: "7px 14px",
-        border: "1px solid #d1d5db",
-        borderRadius: 6,
-        background: "#f9fafb",
-        color: "#6b7280",
-        fontSize: 17,
-        cursor: "pointer",
-        fontFamily: "inherit"
-      }
-    }, "\u6E05\u9664"), /*#__PURE__*/React.createElement("button", {
-      onClick: function onClick() {
-        return setEditing(null);
-      },
-      style: {
-        marginLeft: "auto",
-        padding: "7px 14px",
-        border: "1px solid #d1d5db",
-        borderRadius: 6,
-        background: "#fff",
-        color: "#9ca3af",
-        fontSize: 15,
-        cursor: "pointer",
-        fontFamily: "inherit"
-      }
-    }, "\u2715 \u95DC\u9589"));
-  }());
+  return (
+    <div style={card}>
+      {/* ── 班別圖例 + 操作說明 ── */}
+      <div style={{ marginBottom: 12 }}>
+        {/* 班別色碼說明 */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 8, alignItems: "center" }}>
+          <span style={{ fontSize: 17, color: "#6b7280", marginRight: 2 }}>班別：</span>
+          {shiftDefs.map((s) => (
+            <span key={s.code} style={{
+              padding: "2px 10px", borderRadius: 4, fontSize: 17, fontWeight: 500,
+              color: s.fg, background: s.bg,
+            }}>
+              {s.code}　{s.name}
+            </span>
+          ))}
+        </div>
+        {/* 操作說明提示列 */}
+        <div style={{
+          display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap",
+          background: "#eff6ff", border: "1px solid #bfdbfe",
+          borderRadius: 6, padding: "6px 12px",
+        }}>
+          <span style={{ fontSize: 17, color: "#1d4ed8" }}>
+            ✏️ <strong>如何修改班別：</strong>
+          </span>
+          <span style={{ fontSize: 17, color: "#1d4ed8" }}>
+            點擊任意<strong>班別格子</strong>
+          </span>
+          <span style={{ fontSize: 17, color: "#6b7280" }}>→</span>
+          <span style={{ fontSize: 17, color: "#1d4ed8" }}>
+            該員工列下方展開<strong>班別選單</strong>
+          </span>
+          <span style={{ fontSize: 17, color: "#6b7280" }}>→</span>
+          <span style={{ fontSize: 17, color: "#1d4ed8" }}>
+            點選新班別或「清除」
+          </span>
+          {editing && (
+            <span style={{
+              marginLeft: "auto", padding: "2px 10px",
+              background: "#dbeafe", borderRadius: 4,
+              fontSize: 17, color: "#1e40af", fontWeight: 500,
+            }}>
+              編輯中：{employees.find(e=>e.id===editing.empId)?.name} 第{editing.dayIdx+1}日
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* ── 班表表格（橫向捲動） ── */}
+      <div style={{ overflowX: "auto" }}>
+        <table style={{ borderCollapse: "collapse", fontSize: 17 }}>
+          {/* 欄寬設定 */}
+          <colgroup>
+            <col style={{ minWidth: 108 }} />
+            {dayArr.map((di) => (
+              <col key={di} style={{ width: 30 }} />
+            ))}
+            <col style={{ minWidth: 70 }} />
+          </colgroup>
+
+          {/* ── 標頭列 ── */}
+          <thead>
+            <tr>
+              {/* 員工欄標頭（sticky 固定） */}
+              <th
+                style={{
+                  padding: "6px 10px",
+                  textAlign: "left",
+                  background: "#1b6ca8",
+                  color: "#fff",
+                  position: "sticky",
+                  left: 0,
+                  zIndex: 2,
+                  fontSize: 17,
+                  borderRadius: "6px 0 0 0",
+                }}
+              >
+                員工
+              </th>
+              {/* 日期標頭 */}
+              {dayArr.map((di) => {
+                const d = di + 1;
+                const dow = new Date(year, month - 1, d).getDay();
+                // 日=紅、六=藍、平日=深藍
+                const bg =
+                  dow === 0 ? "#b91c1c" : dow === 6 ? "#1d4ed8" : "#1b6ca8";
+                return (
+                  <th
+                    key={di}
+                    style={{
+                      padding: "2px 1px",
+                      textAlign: "center",
+                      background: bg,
+                      color: "#fff",
+                      fontSize: 14,
+                    }}
+                  >
+                    <div style={{ fontWeight: 500 }}>{d}</div>
+                    <div style={{ opacity: 0.8 }}>{WEEKDAY[dow]}</div>
+                  </th>
+                );
+              })}
+              {/* 統計欄標頭 */}
+              <th
+                style={{
+                  padding: "6px 4px",
+                  background: "#1b6ca8",
+                  color: "#fff",
+                  textAlign: "center",
+                  fontSize: 15,
+                  borderRadius: "0 6px 0 0",
+                }}
+              >
+                統計
+              </th>
+            </tr>
+          </thead>
+
+          {/* ── 資料列 ── */}
+          <tbody>
+            {employees.flatMap((emp, ri) => {
+              const empShifts = schedule[emp.id] || Array(days).fill("-");
+              // 計算本月白班/小夜/大夜次數
+              const cnt = { D: 0, E: 0, N: 0 };
+              empShifts.forEach((s) => {
+                if (cnt[s] !== undefined) cnt[s]++;
+              });
+              const rowBg = ri % 2 === 0 ? "#fff" : "#f9fafb";
+              const rows = [];
+
+              // ── 員工班表列 ──
+              rows.push(
+                <tr key={emp.id} style={{ background: rowBg }}>
+                  {/* 員工名稱欄（sticky 固定） */}
+                  <td
+                    style={{
+                      padding: "4px 10px",
+                      position: "sticky",
+                      left: 0,
+                      zIndex: 1,
+                      background: rowBg,
+                      borderRight: "1px solid #e5e7eb",
+                    }}
+                  >
+                    <div style={{ fontWeight: 500, color: "#1f2937", fontSize: 18 }}>
+                      {emp.name}
+                    </div>
+                    <div style={{ fontSize: 14, color: "#9ca3af" }}>{emp.id}</div>
+                  </td>
+
+                  {/* 班別格子 */}
+                  {dayArr.map((di) => {
+                    const sh = empShifts[di] || "-";
+                    const st = findSt(sh);
+                    const active =
+                      editing?.empId === emp.id && editing?.dayIdx === di;
+                    const dow = new Date(year, month - 1, di + 1).getDay();
+                    // 週末背景微黃
+                    const wkBg =
+                      dow === 0 || dow === 6
+                        ? ri % 2 === 0
+                          ? "#fffbeb"
+                          : "#fef9e7"
+                        : undefined;
+                    return (
+                      <td
+                        key={di}
+                        style={{
+                          padding: 2,
+                          textAlign: "center",
+                          background: active ? "#dbeafe" : wkBg,
+                        }}
+                      >
+                        <button
+                          title={`點擊修改班別\n員工：${emp.name}\n日期：${month}/${di+1}\n目前：${sh === "-" ? "（無）" : sh}`}
+                          onClick={() =>
+                            setEditing(
+                              active ? null : { empId: emp.id, dayIdx: di }
+                            )
+                          }
+                          style={{
+                            width: 28, height: 24, borderRadius: 3,
+                            border: active ? "2px solid #1b6ca8" : "1px solid transparent",
+                            background: active ? "#dbeafe" : sh === "-" ? "#f9fafb" : st.bg,
+                            color: sh === "-" ? "#d1d5db" : st.fg,
+                            fontSize: 13, fontWeight: 700,
+                            cursor: "pointer", fontFamily: "inherit",
+                          }}
+                        >
+                          {sh === "-" ? "·" : sh}
+                        </button>
+                      </td>
+                    );
+                  })}
+
+                  {/* 出勤統計欄 */}
+                  <td
+                    style={{
+                      padding: "2px 4px",
+                      textAlign: "center",
+                      fontSize: 14,
+                      lineHeight: 1.6,
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    <span style={{ color: "#1d4ed8" }}>白{cnt.D}</span>{" "}
+                    <span style={{ color: "#c2410c" }}>夜{cnt.E}</span>{" "}
+                    <span style={{ color: "#4338ca" }}>大{cnt.N}</span>
+                  </td>
+                </tr>
+              );
+
+              return rows;
+            })}
+          </tbody>
+
+          {/* ── 每日統計列 ── */}
+          <tfoot>
+            <tr
+              style={{
+                borderTop: "2px solid #d1d5db",
+                background: "#f3f4f6",
+              }}
+            >
+              <td
+                style={{
+                  padding: "4px 10px",
+                  fontWeight: 500,
+                  fontSize: 15,
+                  color: "#6b7280",
+                  position: "sticky",
+                  left: 0,
+                  background: "#f3f4f6",
+                  borderRight: "1px solid #e5e7eb",
+                  zIndex: 1,
+                }}
+              >
+                每日人數
+              </td>
+              {dayArr.map((di) => {
+                const stats = dayStat(di);
+                return (
+                  <td
+                    key={di}
+                    style={{
+                      padding: "1px",
+                      textAlign: "center",
+                      fontSize: 13,
+                      lineHeight: 1.4,
+                    }}
+                  >
+                    {["D", "E", "N"]
+                      .filter((c) => stats[c] > 0)
+                      .map((c) => {
+                        const st = findSt(c);
+                        // 白色文字的班（如大夜）改用背景色顯示數字
+                        const col =
+                          st.fg === "#ffffff" ? st.bg : st.fg;
+                        return (
+                          <div
+                            key={c}
+                            style={{ fontWeight: 700, color: col }}
+                          >
+                            {stats[c]}
+                          </div>
+                        );
+                      })}
+                  </td>
+                );
+              })}
+              <td />
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      {/* ── 編輯面板（固定在班表下方，不影響表格版面）── */}
+      {editing && (() => {
+        const editEmp    = employees.find(e => e.id === editing.empId);
+        const editShifts = schedule[editing.empId] || [];
+        const curSh      = editShifts[editing.dayIdx] || "-";
+        const dow        = new Date(year, month - 1, editing.dayIdx + 1).getDay();
+        const dowLabel   = ["日","一","二","三","四","五","六"][dow];
+        return (
+          <div style={{
+            marginTop: 8,
+            background: "#eff6ff",
+            border: "2px solid #3b82f6",
+            borderRadius: 10,
+            padding: "14px 16px",
+            display: "flex",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: 8,
+          }}>
+            {/* 說明文字 */}
+            <span style={{
+              fontSize: 17, fontWeight: 700, color: "#1e40af",
+              marginRight: 6, whiteSpace: "nowrap",
+            }}>
+              ✏️ {editEmp?.name}・{month}/{editing.dayIdx + 1}（{dowLabel}）
+            </span>
+            <span style={{ fontSize: 15, color: "#6b7280", marginRight: 8 }}>
+              目前：<strong style={{ color: "#1e3a5f" }}>{curSh === "-" ? "（無）" : curSh}</strong>
+            </span>
+            {/* 班別選擇按鈕 */}
+            {shiftDefs.map((st) => (
+              <button
+                key={st.code}
+                onClick={() => {
+                  onUpdate(editing.empId, editing.dayIdx, st.code);
+                  setEditing(null);
+                }}
+                style={{
+                  padding: "7px 16px",
+                  border: curSh === st.code ? "3px solid #1e3a5f" : "2px solid transparent",
+                  borderRadius: 6,
+                  background: st.bg,
+                  color: st.fg,
+                  fontSize: 17, fontWeight: 700,
+                  cursor: "pointer", fontFamily: "inherit",
+                  boxShadow: curSh === st.code ? "0 0 0 2px #93c5fd" : "none",
+                }}
+              >
+                {st.code}　{st.name}
+              </button>
+            ))}
+            {/* 清除 */}
+            <button
+              onClick={() => { onUpdate(editing.empId, editing.dayIdx, "-"); setEditing(null); }}
+              style={{
+                padding: "7px 14px", border: "1px solid #d1d5db",
+                borderRadius: 6, background: "#f9fafb", color: "#6b7280",
+                fontSize: 17, cursor: "pointer", fontFamily: "inherit",
+              }}
+            >
+              清除
+            </button>
+            {/* 關閉 */}
+            <button
+              onClick={() => setEditing(null)}
+              style={{
+                marginLeft: "auto",
+                padding: "7px 14px", border: "1px solid #d1d5db",
+                borderRadius: 6, background: "#fff", color: "#9ca3af",
+                fontSize: 15, cursor: "pointer", fontFamily: "inherit",
+              }}
+            >
+              ✕ 關閉
+            </button>
+          </div>
+        );
+      })()}
+    </div>
+  );
 }
 
 // ═══════════════════════════════════════
 // 六、員工管理頁籤元件
 // ═══════════════════════════════════════
 
-function EmployeeTab(_ref8) {
-  var employees = _ref8.employees,
-    onChange = _ref8.onChange;
-  var blank = {
-    id: "",
-    name: "",
-    email: "",
-    license: "",
-    startDate: ""
-  };
-  var _useState3 = useState(blank),
-    _useState4 = _slicedToArray(_useState3, 2),
-    form = _useState4[0],
-    setForm = _useState4[1];
-  var _useState5 = useState(null),
-    _useState6 = _slicedToArray(_useState5, 2),
-    editId = _useState6[0],
-    setEditId = _useState6[1]; // 目前正在編輯的員工 id
-  var _useState7 = useState(null),
-    _useState8 = _slicedToArray(_useState7, 2),
-    message = _useState8[0],
-    setMessage = _useState8[1]; // [是否成功, 訊息文字]
+function EmployeeTab({ employees, onChange }) {
+  const blank = { id: "", name: "", email: "", license: "", startDate: "" };
+  const [form, setForm] = useState(blank);
+  const [editId, setEditId] = useState(null); // 目前正在編輯的員工 id
+  const [message, setMessage] = useState(null); // [是否成功, 訊息文字]
 
-  var set = function set(k, v) {
-    return setForm(function (p) {
-      return _objectSpread(_objectSpread({}, p), {}, _defineProperty({}, k, v));
-    });
-  };
-  var reset = function reset() {
+  const set = (k, v) => setForm((p) => ({ ...p, [k]: v }));
+  const reset = () => {
     setForm(blank);
     setEditId(null);
   };
 
   /** 儲存（新增或更新） */
-  var save = function save() {
+  const save = () => {
     if (!form.id || !form.name) {
       setMessage([false, "員工編號和姓名為必填"]);
       return;
     }
-    if (!editId && employees.find(function (e) {
-      return e.id === form.id;
-    })) {
-      setMessage([false, "\u54E1\u5DE5\u7DE8\u865F ".concat(form.id, " \u5DF2\u5B58\u5728")]);
+    if (!editId && employees.find((e) => e.id === form.id)) {
+      setMessage([false, `員工編號 ${form.id} 已存在`]);
       return;
     }
-    onChange(editId ? employees.map(function (e) {
-      return e.id === editId ? _objectSpread({}, form) : e;
-    }) : [].concat(_toConsumableArray(employees), [_objectSpread({}, form)]));
-    setMessage([true, "\u54E1\u5DE5 ".concat(form.name, " \u5DF2").concat(editId ? "更新" : "新增")]);
+    onChange(
+      editId
+        ? employees.map((e) => (e.id === editId ? { ...form } : e))
+        : [...employees, { ...form }]
+    );
+    setMessage([true, `員工 ${form.name} 已${editId ? "更新" : "新增"}`]);
     reset();
   };
 
   /** 刪除員工 */
-  var del = function del(e) {
-    if (!confirm("\u78BA\u5B9A\u522A\u9664\u54E1\u5DE5 ".concat(e.name, "\uFF08").concat(e.id, "\uFF09\uFF1F"))) return;
-    onChange(employees.filter(function (x) {
-      return x.id !== e.id;
-    }));
-    setMessage([true, "\u54E1\u5DE5 ".concat(e.name, " \u5DF2\u522A\u9664")]);
+  const del = (e) => {
+    if (!confirm(`確定刪除員工 ${e.name}（${e.id}）？`)) return;
+    onChange(employees.filter((x) => x.id !== e.id));
+    setMessage([true, `員工 ${e.name} 已刪除`]);
   };
 
   // 欄位定義
-  var FIELDS = [{
-    k: "id",
-    label: "員工編號 *",
-    ph: "N0960",
-    dis: !!editId
-  }, {
-    k: "name",
-    label: "員工姓名 *",
-    ph: "吳玉柱"
-  }, {
-    k: "email",
-    label: "E-Mail",
-    ph: "xxx@gmail.com"
-  }, {
-    k: "license",
-    label: "證照",
-    ph: "照顧服務員單一級"
-  }, {
-    k: "startDate",
-    label: "入職日期",
-    ph: "2012-08-19",
-    type: "date"
-  }];
-  return /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      flexDirection: "column",
-      gap: 16
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: card
-  }, /*#__PURE__*/React.createElement("h3", {
-    style: {
-      margin: "0 0 14px",
-      fontSize: 21,
-      fontWeight: 500,
-      color: "#1f2937"
-    }
-  }, editId ? "編輯員工" : "新增員工"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "grid",
-      gridTemplateColumns: "repeat(auto-fill, minmax(165px, 1fr))",
-      gap: 12
-    }
-  }, FIELDS.map(function (f) {
-    return /*#__PURE__*/React.createElement("div", {
-      key: f.k
-    }, /*#__PURE__*/React.createElement("label", {
-      style: lbl
-    }, f.label), /*#__PURE__*/React.createElement("input", {
-      type: f.type || "text",
-      value: form[f.k],
-      placeholder: f.ph,
-      disabled: f.dis,
-      onChange: function onChange(e) {
-        return set(f.k, e.target.value);
-      },
-      style: inp(f.dis)
-    }));
-  })), /*#__PURE__*/React.createElement("div", {
-    style: {
-      marginTop: 14,
-      display: "flex",
-      gap: 8
-    }
-  }, /*#__PURE__*/React.createElement("button", {
-    onClick: save,
-    style: btn("#1b6ca8")
-  }, editId ? "更新員工" : "新增員工"), editId && /*#__PURE__*/React.createElement("button", {
-    onClick: reset,
-    style: btn("#6b7280")
-  }, "\u53D6\u6D88")), message && /*#__PURE__*/React.createElement("div", {
-    style: msg(message[0])
-  }, message[0] ? "✓ " : "✗ ", message[1])), /*#__PURE__*/React.createElement("div", {
-    style: card
-  }, /*#__PURE__*/React.createElement("h3", {
-    style: {
-      margin: "0 0 14px",
-      fontSize: 21,
-      fontWeight: 500,
-      color: "#1f2937"
-    }
-  }, "\u54E1\u5DE5\u6E05\u55AE\uFF08", employees.length, " \u4EBA\uFF09"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      overflowX: "auto"
-    }
-  }, /*#__PURE__*/React.createElement("table", {
-    style: {
-      width: "100%",
-      borderCollapse: "collapse",
-      fontSize: 18
-    }
-  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, ["員工編號", "姓名", "E-Mail", "證照", "入職日期", "操作"].map(function (h) {
-    return /*#__PURE__*/React.createElement("th", {
-      key: h,
-      style: {
-        padding: "7px 10px",
-        textAlign: "left",
-        borderBottom: "2px solid #e5e7eb",
-        color: "#6b7280",
-        fontWeight: 500,
-        fontSize: 17,
-        whiteSpace: "nowrap"
-      }
-    }, h);
-  }))), /*#__PURE__*/React.createElement("tbody", null, employees.map(function (e, i) {
-    return /*#__PURE__*/React.createElement("tr", {
-      key: e.id,
-      style: {
-        borderBottom: "1px solid #f3f4f6"
-      }
-    }, /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: "8px 10px",
-        fontWeight: 500,
-        color: "#1b6ca8"
-      }
-    }, e.id), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: "8px 10px",
-        color: "#1f2937"
-      }
-    }, e.name), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: "8px 10px",
-        color: "#6b7280",
-        fontSize: 17
-      }
-    }, e.email || "—"), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: "8px 10px",
-        color: "#1f2937"
-      }
-    }, e.license || "—"), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: "8px 10px",
-        color: "#6b7280"
-      }
-    }, e.startDate || "—"), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: "8px 10px",
-        whiteSpace: "nowrap"
-      }
-    }, /*#__PURE__*/React.createElement("button", {
-      onClick: function onClick() {
-        setForm(_objectSpread({}, e));
-        setEditId(e.id);
-        setMessage(null);
-      },
-      style: _objectSpread(_objectSpread({}, btn("#f59e0b", "#7c2d12")), {}, {
-        padding: "3px 10px",
-        fontSize: 15,
-        marginRight: 6
-      })
-    }, "\u7DE8\u8F2F"), /*#__PURE__*/React.createElement("button", {
-      onClick: function onClick() {
-        return del(e);
-      },
-      style: _objectSpread(_objectSpread({}, btn("#ef4444")), {}, {
-        padding: "3px 10px",
-        fontSize: 15
-      })
-    }, "\u522A\u9664")));
-  }))))));
+  const FIELDS = [
+    { k: "id",        label: "員工編號 *", ph: "N0960",            dis: !!editId },
+    { k: "name",      label: "員工姓名 *", ph: "吳玉柱" },
+    { k: "email",     label: "E-Mail",     ph: "xxx@gmail.com" },
+    { k: "license",   label: "證照",       ph: "照顧服務員單一級" },
+    { k: "startDate", label: "入職日期",   ph: "2012-08-19", type: "date" },
+  ];
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      {/* ── 新增/編輯表單 ── */}
+      <div style={card}>
+        <h3
+          style={{
+            margin: "0 0 14px",
+            fontSize: 21,
+            fontWeight: 500,
+            color: "#1f2937",
+          }}
+        >
+          {editId ? "編輯員工" : "新增員工"}
+        </h3>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(165px, 1fr))",
+            gap: 12,
+          }}
+        >
+          {FIELDS.map((f) => (
+            <div key={f.k}>
+              <label style={lbl}>{f.label}</label>
+              <input
+                type={f.type || "text"}
+                value={form[f.k]}
+                placeholder={f.ph}
+                disabled={f.dis}
+                onChange={(e) => set(f.k, e.target.value)}
+                style={inp(f.dis)}
+              />
+            </div>
+          ))}
+        </div>
+        <div style={{ marginTop: 14, display: "flex", gap: 8 }}>
+          <button onClick={save} style={btn("#1b6ca8")}>
+            {editId ? "更新員工" : "新增員工"}
+          </button>
+          {editId && (
+            <button onClick={reset} style={btn("#6b7280")}>
+              取消
+            </button>
+          )}
+        </div>
+        {message && (
+          <div style={msg(message[0])}>
+            {message[0] ? "✓ " : "✗ "}
+            {message[1]}
+          </div>
+        )}
+      </div>
+
+      {/* ── 員工清單 ── */}
+      <div style={card}>
+        <h3
+          style={{
+            margin: "0 0 14px",
+            fontSize: 21,
+            fontWeight: 500,
+            color: "#1f2937",
+          }}
+        >
+          員工清單（{employees.length} 人）
+        </h3>
+        <div style={{ overflowX: "auto" }}>
+          <table
+            style={{ width: "100%", borderCollapse: "collapse", fontSize: 18 }}
+          >
+            <thead>
+              <tr>
+                {["員工編號", "姓名", "E-Mail", "證照", "入職日期", "操作"].map(
+                  (h) => (
+                    <th
+                      key={h}
+                      style={{
+                        padding: "7px 10px",
+                        textAlign: "left",
+                        borderBottom: "2px solid #e5e7eb",
+                        color: "#6b7280",
+                        fontWeight: 500,
+                        fontSize: 17,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {h}
+                    </th>
+                  )
+                )}
+              </tr>
+            </thead>
+            <tbody>
+              {employees.map((e, i) => (
+                <tr
+                  key={e.id}
+                  style={{ borderBottom: "1px solid #f3f4f6" }}
+                >
+                  <td
+                    style={{
+                      padding: "8px 10px",
+                      fontWeight: 500,
+                      color: "#1b6ca8",
+                    }}
+                  >
+                    {e.id}
+                  </td>
+                  <td style={{ padding: "8px 10px", color: "#1f2937" }}>
+                    {e.name}
+                  </td>
+                  <td
+                    style={{
+                      padding: "8px 10px",
+                      color: "#6b7280",
+                      fontSize: 17,
+                    }}
+                  >
+                    {e.email || "—"}
+                  </td>
+                  <td style={{ padding: "8px 10px", color: "#1f2937" }}>
+                    {e.license || "—"}
+                  </td>
+                  <td style={{ padding: "8px 10px", color: "#6b7280" }}>
+                    {e.startDate || "—"}
+                  </td>
+                  <td
+                    style={{ padding: "8px 10px", whiteSpace: "nowrap" }}
+                  >
+                    <button
+                      onClick={() => {
+                        setForm({ ...e });
+                        setEditId(e.id);
+                        setMessage(null);
+                      }}
+                      style={{
+                        ...btn("#f59e0b", "#7c2d12"),
+                        padding: "3px 10px",
+                        fontSize: 15,
+                        marginRight: 6,
+                      }}
+                    >
+                      編輯
+                    </button>
+                    <button
+                      onClick={() => del(e)}
+                      style={{
+                        ...btn("#ef4444"),
+                        padding: "3px 10px",
+                        fontSize: 15,
+                      }}
+                    >
+                      刪除
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 // ═══════════════════════════════════════
 // 七、班別設定頁籤元件
 // ═══════════════════════════════════════
 
-function ShiftTypeTab(_ref9) {
-  var shiftDefs = _ref9.shiftDefs,
-    onChange = _ref9.onChange;
-  var blank = {
-    code: "",
-    name: "",
-    fg: "#1e3a5f",
-    bg: "#90CAF9"
-  };
-  var _useState9 = useState(blank),
-    _useState0 = _slicedToArray(_useState9, 2),
-    form = _useState0[0],
-    setForm = _useState0[1];
-  var _useState1 = useState(null),
-    _useState10 = _slicedToArray(_useState1, 2),
-    editCode = _useState10[0],
-    setEditCode = _useState10[1];
-  var _useState11 = useState(null),
-    _useState12 = _slicedToArray(_useState11, 2),
-    message = _useState12[0],
-    setMessage = _useState12[1];
-  var set = function set(k, v) {
-    return setForm(function (p) {
-      return _objectSpread(_objectSpread({}, p), {}, _defineProperty({}, k, v));
-    });
-  };
-  var reset = function reset() {
+function ShiftTypeTab({ shiftDefs, onChange }) {
+  const blank = { code: "", name: "", fg: "#1e3a5f", bg: "#90CAF9" };
+  const [form, setForm] = useState(blank);
+  const [editCode, setEditCode] = useState(null);
+  const [message, setMessage] = useState(null);
+
+  const set = (k, v) => setForm((p) => ({ ...p, [k]: v }));
+  const reset = () => {
     setForm(blank);
     setEditCode(null);
   };
-  var save = function save() {
+
+  const save = () => {
     if (!form.code || !form.name) {
       setMessage([false, "代號和名稱為必填"]);
       return;
     }
-    if (!editCode && shiftDefs.find(function (s) {
-      return s.code === form.code;
-    })) {
-      setMessage([false, "\u73ED\u5225\u4EE3\u865F ".concat(form.code, " \u5DF2\u5B58\u5728")]);
+    if (!editCode && shiftDefs.find((s) => s.code === form.code)) {
+      setMessage([false, `班別代號 ${form.code} 已存在`]);
       return;
     }
-    onChange(editCode ? shiftDefs.map(function (s) {
-      return s.code === editCode ? _objectSpread({}, form) : s;
-    }) : [].concat(_toConsumableArray(shiftDefs), [_objectSpread({}, form)]));
-    setMessage([true, "\u73ED\u5225 ".concat(form.code, "\uFF08").concat(form.name, "\uFF09\u5DF2").concat(editCode ? "更新" : "新增")]);
+    onChange(
+      editCode
+        ? shiftDefs.map((s) => (s.code === editCode ? { ...form } : s))
+        : [...shiftDefs, { ...form }]
+    );
+    setMessage([
+      true,
+      `班別 ${form.code}（${form.name}）已${editCode ? "更新" : "新增"}`,
+    ]);
     reset();
   };
-  return /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      flexDirection: "column",
-      gap: 16
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: card
-  }, /*#__PURE__*/React.createElement("h3", {
-    style: {
-      margin: "0 0 14px",
-      fontSize: 21,
-      fontWeight: 500,
-      color: "#1f2937"
-    }
-  }, editCode ? "編輯班別" : "新增班別"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      flexWrap: "wrap",
-      gap: 14,
-      alignItems: "flex-end"
-    }
-  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
-    style: lbl
-  }, "\u73ED\u5225\u4EE3\u865F *"), /*#__PURE__*/React.createElement("input", {
-    value: form.code,
-    placeholder: "D",
-    disabled: !!editCode,
-    onChange: function onChange(e) {
-      return set("code", e.target.value.toUpperCase());
-    },
-    style: _objectSpread(_objectSpread({}, inp(!!editCode)), {}, {
-      width: 80
-    })
-  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
-    style: lbl
-  }, "\u73ED\u5225\u540D\u7A31 *"), /*#__PURE__*/React.createElement("input", {
-    value: form.name,
-    placeholder: "\u767D\u73ED",
-    onChange: function onChange(e) {
-      return set("name", e.target.value);
-    },
-    style: _objectSpread(_objectSpread({}, inp()), {}, {
-      width: 100
-    })
-  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
-    style: lbl
-  }, "\u6587\u5B57\u984F\u8272"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      alignItems: "center",
-      gap: 6
-    }
-  }, /*#__PURE__*/React.createElement("input", {
-    type: "color",
-    value: form.fg,
-    onChange: function onChange(e) {
-      return set("fg", e.target.value);
-    },
-    style: {
-      width: 38,
-      height: 34,
-      padding: 2,
-      border: "1px solid #d1d5db",
-      borderRadius: 6,
-      cursor: "pointer"
-    }
-  }), /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: 15,
-      color: "#9ca3af",
-      fontFamily: "monospace"
-    }
-  }, form.fg))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
-    style: lbl
-  }, "\u80CC\u666F\u984F\u8272"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      alignItems: "center",
-      gap: 6
-    }
-  }, /*#__PURE__*/React.createElement("input", {
-    type: "color",
-    value: form.bg,
-    onChange: function onChange(e) {
-      return set("bg", e.target.value);
-    },
-    style: {
-      width: 38,
-      height: 34,
-      padding: 2,
-      border: "1px solid #d1d5db",
-      borderRadius: 6,
-      cursor: "pointer"
-    }
-  }), /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: 15,
-      color: "#9ca3af",
-      fontFamily: "monospace"
-    }
-  }, form.bg))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
-    style: lbl
-  }, "\u9810\u89BD\u6548\u679C"), /*#__PURE__*/React.createElement("span", {
-    style: {
-      padding: "5px 16px",
-      borderRadius: 4,
-      fontWeight: 700,
-      fontSize: 21,
-      color: form.fg,
-      background: form.bg,
-      border: "1px solid #e5e7eb"
-    }
-  }, form.code || "?", " ", form.name || "—")), /*#__PURE__*/React.createElement("button", {
-    onClick: save,
-    style: btn("#1b6ca8")
-  }, editCode ? "更新" : "新增"), editCode && /*#__PURE__*/React.createElement("button", {
-    onClick: reset,
-    style: btn("#6b7280")
-  }, "\u53D6\u6D88")), message && /*#__PURE__*/React.createElement("div", {
-    style: msg(message[0])
-  }, message[0] ? "✓ " : "✗ ", message[1])), /*#__PURE__*/React.createElement("div", {
-    style: card
-  }, /*#__PURE__*/React.createElement("h3", {
-    style: {
-      margin: "0 0 14px",
-      fontSize: 21,
-      fontWeight: 500,
-      color: "#1f2937"
-    }
-  }, "\u73ED\u5225\u6E05\u55AE"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      flexWrap: "wrap",
-      gap: 12
-    }
-  }, shiftDefs.map(function (st) {
-    return /*#__PURE__*/React.createElement("div", {
-      key: st.code,
-      style: {
-        border: "1px solid #e5e7eb",
-        borderRadius: 12,
-        padding: 14,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: 8,
-        minWidth: 96,
-        background: "#f9fafb"
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        padding: "6px 20px",
-        borderRadius: 4,
-        fontWeight: 700,
-        fontSize: 25,
-        color: st.fg,
-        background: st.bg,
-        textAlign: "center"
-      }
-    }, st.code), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 17,
-        color: "#6b7280"
-      }
-    }, st.name), /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "flex",
-        gap: 5
-      }
-    }, /*#__PURE__*/React.createElement("button", {
-      onClick: function onClick() {
-        setForm(_objectSpread({}, st));
-        setEditCode(st.code);
-        setMessage(null);
-      },
-      style: _objectSpread(_objectSpread({}, btn("#f59e0b", "#7c2d12")), {}, {
-        padding: "2px 8px",
-        fontSize: 15
-      })
-    }, "\u7DE8\u8F2F"), /*#__PURE__*/React.createElement("button", {
-      onClick: function onClick() {
-        if (!confirm("\u78BA\u5B9A\u522A\u9664\u73ED\u5225 ".concat(st.code, "\uFF08").concat(st.name, "\uFF09\uFF1F"))) return;
-        onChange(shiftDefs.filter(function (s) {
-          return s.code !== st.code;
-        }));
-      },
-      style: _objectSpread(_objectSpread({}, btn("#ef4444")), {}, {
-        padding: "2px 8px",
-        fontSize: 15
-      })
-    }, "\u522A\u9664")));
-  }))));
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      {/* ── 新增/編輯班別 ── */}
+      <div style={card}>
+        <h3
+          style={{
+            margin: "0 0 14px",
+            fontSize: 21,
+            fontWeight: 500,
+            color: "#1f2937",
+          }}
+        >
+          {editCode ? "編輯班別" : "新增班別"}
+        </h3>
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 14,
+            alignItems: "flex-end",
+          }}
+        >
+          {/* 代號 */}
+          <div>
+            <label style={lbl}>班別代號 *</label>
+            <input
+              value={form.code}
+              placeholder="D"
+              disabled={!!editCode}
+              onChange={(e) => set("code", e.target.value.toUpperCase())}
+              style={{ ...inp(!!editCode), width: 80 }}
+            />
+          </div>
+          {/* 名稱 */}
+          <div>
+            <label style={lbl}>班別名稱 *</label>
+            <input
+              value={form.name}
+              placeholder="白班"
+              onChange={(e) => set("name", e.target.value)}
+              style={{ ...inp(), width: 100 }}
+            />
+          </div>
+          {/* 文字顏色 */}
+          <div>
+            <label style={lbl}>文字顏色</label>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <input
+                type="color"
+                value={form.fg}
+                onChange={(e) => set("fg", e.target.value)}
+                style={{
+                  width: 38,
+                  height: 34,
+                  padding: 2,
+                  border: "1px solid #d1d5db",
+                  borderRadius: 6,
+                  cursor: "pointer",
+                }}
+              />
+              <span
+                style={{
+                  fontSize: 15,
+                  color: "#9ca3af",
+                  fontFamily: "monospace",
+                }}
+              >
+                {form.fg}
+              </span>
+            </div>
+          </div>
+          {/* 背景顏色 */}
+          <div>
+            <label style={lbl}>背景顏色</label>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <input
+                type="color"
+                value={form.bg}
+                onChange={(e) => set("bg", e.target.value)}
+                style={{
+                  width: 38,
+                  height: 34,
+                  padding: 2,
+                  border: "1px solid #d1d5db",
+                  borderRadius: 6,
+                  cursor: "pointer",
+                }}
+              />
+              <span
+                style={{
+                  fontSize: 15,
+                  color: "#9ca3af",
+                  fontFamily: "monospace",
+                }}
+              >
+                {form.bg}
+              </span>
+            </div>
+          </div>
+          {/* 預覽 */}
+          <div>
+            <label style={lbl}>預覽效果</label>
+            <span
+              style={{
+                padding: "5px 16px",
+                borderRadius: 4,
+                fontWeight: 700,
+                fontSize: 21,
+                color: form.fg,
+                background: form.bg,
+                border: "1px solid #e5e7eb",
+              }}
+            >
+              {form.code || "?"} {form.name || "—"}
+            </span>
+          </div>
+          <button onClick={save} style={btn("#1b6ca8")}>
+            {editCode ? "更新" : "新增"}
+          </button>
+          {editCode && (
+            <button onClick={reset} style={btn("#6b7280")}>
+              取消
+            </button>
+          )}
+        </div>
+        {message && (
+          <div style={msg(message[0])}>
+            {message[0] ? "✓ " : "✗ "}
+            {message[1]}
+          </div>
+        )}
+      </div>
+
+      {/* ── 班別清單 ── */}
+      <div style={card}>
+        <h3
+          style={{
+            margin: "0 0 14px",
+            fontSize: 21,
+            fontWeight: 500,
+            color: "#1f2937",
+          }}
+        >
+          班別清單
+        </h3>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
+          {shiftDefs.map((st) => (
+            <div
+              key={st.code}
+              style={{
+                border: "1px solid #e5e7eb",
+                borderRadius: 12,
+                padding: 14,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: 8,
+                minWidth: 96,
+                background: "#f9fafb",
+              }}
+            >
+              {/* 班別徽章 */}
+              <div
+                style={{
+                  padding: "6px 20px",
+                  borderRadius: 4,
+                  fontWeight: 700,
+                  fontSize: 25,
+                  color: st.fg,
+                  background: st.bg,
+                  textAlign: "center",
+                }}
+              >
+                {st.code}
+              </div>
+              <div style={{ fontSize: 17, color: "#6b7280" }}>{st.name}</div>
+              <div style={{ display: "flex", gap: 5 }}>
+                <button
+                  onClick={() => {
+                    setForm({ ...st });
+                    setEditCode(st.code);
+                    setMessage(null);
+                  }}
+                  style={{
+                    ...btn("#f59e0b", "#7c2d12"),
+                    padding: "2px 8px",
+                    fontSize: 15,
+                  }}
+                >
+                  編輯
+                </button>
+                <button
+                  onClick={() => {
+                    if (!confirm(`確定刪除班別 ${st.code}（${st.name}）？`))
+                      return;
+                    onChange(shiftDefs.filter((s) => s.code !== st.code));
+                  }}
+                  style={{
+                    ...btn("#ef4444"),
+                    padding: "2px 8px",
+                    fontSize: 15,
+                  }}
+                >
+                  刪除
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+    </div>
+  );
 }
+
 
 // ═══════════════════════════════════════
 // 八之一、PDF 轉入元件
@@ -1381,71 +1204,59 @@ function ShiftTypeTab(_ref9) {
  * 流程：上傳 PDF → 解析文字 → 預覽確認 → 寫入班表
  * 使用 PDF.js 提取文字，再用正則式辨識年月與班別
  */
-function PdfImportSection(_ref0) {
-  var employees = _ref0.employees,
-    schedules = _ref0.schedules,
-    onAddSchedule = _ref0.onAddSchedule;
+function PdfImportSection({ employees, schedules, onAddSchedule }) {
   // phase: idle | parsing | preview | confirmed | done | error
-  var _useState13 = useState("idle"),
-    _useState14 = _slicedToArray(_useState13, 2),
-    phase = _useState14[0],
-    setPhase = _useState14[1];
-  var _useState15 = useState(null),
-    _useState16 = _slicedToArray(_useState15, 2),
-    preview = _useState16[0],
-    setPreview = _useState16[1]; // { year, month, empMap, days }
-  var _useState17 = useState(""),
-    _useState18 = _slicedToArray(_useState17, 2),
-    errMsg = _useState18[0],
-    setErrMsg = _useState18[1];
-  var _useState19 = useState(false),
-    _useState20 = _slicedToArray(_useState19, 2),
-    showPaste = _useState20[0],
-    setShowPaste = _useState20[1];
-  var _useState21 = useState(""),
-    _useState22 = _slicedToArray(_useState21, 2),
-    pasteText = _useState22[0],
-    setPasteText = _useState22[1];
+  const [phase, setPhase]         = useState("idle");
+  const [preview, setPreview]     = useState(null); // { year, month, empMap, days }
+  const [errMsg, setErrMsg]       = useState("");
+  const [showPaste, setShowPaste] = useState(false);
+  const [pasteText, setPasteText] = useState("");
 
   // ── 標準化班別代號 ──
   // 去掉前綴數字（"3D"→"D"）、取斜線前段（"D/W"→"D", "E/學"→"E"）
-  var norm = function norm(raw) {
+  const norm = (raw) => {
     if (!raw) return null;
-    var stripped = raw.replace(/^\d+/, "");
-    var base = stripped.split("/")[0].toUpperCase();
+    const stripped = raw.replace(/^\d+/, "");
+    const base = stripped.split("/")[0].toUpperCase();
     if (base === "OFF") return "OFF";
     if (["D", "E", "N", "S"].includes(base)) return base;
     return null;
   };
 
   // ── 核心解析：文字 → { year, month, empMap, days } ──
-  var parseText = function parseText(text) {
+  const parseText = (text) => {
     // 1. 辨識年月（例："115年5月班表" 或 "115 年 5 月 班表"）
-    var ymMatch = text.match(/(\d{2,3})\s*[年]\s*(\d{1,2})\s*[月]\s*班表/);
+    const ymMatch = text.match(/(\d{2,3})\s*[年]\s*(\d{1,2})\s*[月]\s*班表/);
     if (!ymMatch) {
-      throw new Error("找不到班表年月\n" + "請確認 PDF 包含「XXX年X月班表」文字\n" + "例：115年5月班表 或 115 年 5 月班表");
+      throw new Error(
+        "找不到班表年月\n" +
+        "請確認 PDF 包含「XXX年X月班表」文字\n" +
+        "例：115年5月班表 或 115 年 5 月班表"
+      );
     }
-    var year = parseInt(ymMatch[1]) + 1911; // 民國年 → 西元年
-    var month = parseInt(ymMatch[2]);
-    var days = daysInMonth(year, month);
+    const year  = parseInt(ymMatch[1]) + 1911; // 民國年 → 西元年
+    const month = parseInt(ymMatch[2]);
+    const days  = daysInMonth(year, month);
 
     // 2. 切成 token 陣列
-    var tokens = text.split(/\s+/).filter(Boolean);
+    const tokens = text.split(/\s+/).filter(Boolean);
 
     // 3. 逐一找員工 ID（N 或 B 開頭後接 4 位數字）
-    var EMP_RE = /^[NB]\d{4}$/;
-    var empMap = {};
-    for (var i = 0; i < tokens.length; i++) {
+    const EMP_RE = /^[NB]\d{4}$/;
+    const empMap = {};
+
+    for (let i = 0; i < tokens.length; i++) {
       if (!EMP_RE.test(tokens[i])) continue;
-      var empId = tokens[i];
+      const empId = tokens[i];
       if (empMap[empId]) continue; // 已解析過，跳過
 
       // 從 ID 之後收集班別 token
-      var shifts = [];
-      var j = i + 1;
-      var nonShiftRun = 0;
+      const shifts = [];
+      let j = i + 1;
+      let nonShiftRun = 0;
+
       while (j < tokens.length && shifts.length < days + 2) {
-        var sh = norm(tokens[j]);
+        const sh = norm(tokens[j]);
         if (sh) {
           shifts.push(sh);
           nonShiftRun = 0;
@@ -1466,122 +1277,70 @@ function PdfImportSection(_ref0) {
       }
       i = j - 1;
     }
+
     if (Object.keys(empMap).length === 0) {
-      throw new Error("無法辨識任何員工班別\n" + "可能原因：\n" + "・PDF 版面複雜，文字順序錯亂\n" + "・請改用「文字貼上」方式（在 PDF 閱讀器按 Ctrl+A 全選後複製）");
+      throw new Error(
+        "無法辨識任何員工班別\n" +
+        "可能原因：\n" +
+        "・PDF 版面複雜，文字順序錯亂\n" +
+        "・請改用「文字貼上」方式（在 PDF 閱讀器按 Ctrl+A 全選後複製）"
+      );
     }
-    return {
-      year: year,
-      month: month,
-      empMap: empMap,
-      days: days
-    };
+
+    return { year, month, empMap, days };
   };
 
   // ── 動態載入 PDF.js ──
-  var loadPdfJs = function loadPdfJs() {
-    return new Promise(function (resolve, reject) {
-      if (window.pdfjsLib) {
-        resolve();
-        return;
-      }
-      var s = document.createElement("script");
+  const loadPdfJs = () =>
+    new Promise((resolve, reject) => {
+      if (window.pdfjsLib) { resolve(); return; }
+      const s = document.createElement("script");
       s.src = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
-      s.onload = function () {
-        window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+      s.onload = () => {
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+          "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
         resolve();
       };
-      s.onerror = function () {
-        return reject(new Error("PDF.js 載入失敗，請檢查網路"));
-      };
+      s.onerror = () => reject(new Error("PDF.js 載入失敗，請檢查網路"));
       document.head.appendChild(s);
     });
-  };
 
   // ── 上傳 PDF 檔案 ──
-  var handlePdfFile = /*#__PURE__*/function () {
-    var _ref1 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(e) {
-      var _e$target$files;
-      var file, buf, pdf, fullText, p, page, tc, items, result, _t;
-      return _regenerator().w(function (_context) {
-        while (1) switch (_context.p = _context.n) {
-          case 0:
-            file = (_e$target$files = e.target.files) === null || _e$target$files === void 0 ? void 0 : _e$target$files[0];
-            if (file) {
-              _context.n = 1;
-              break;
-            }
-            return _context.a(2);
-          case 1:
-            e.target.value = "";
-            setPhase("parsing");
-            setErrMsg("");
-            _context.p = 2;
-            _context.n = 3;
-            return loadPdfJs();
-          case 3:
-            _context.n = 4;
-            return file.arrayBuffer();
-          case 4:
-            buf = _context.v;
-            _context.n = 5;
-            return window.pdfjsLib.getDocument({
-              data: buf
-            }).promise;
-          case 5:
-            pdf = _context.v;
-            fullText = "";
-            p = 1;
-          case 6:
-            if (!(p <= pdf.numPages)) {
-              _context.n = 10;
-              break;
-            }
-            _context.n = 7;
-            return pdf.getPage(p);
-          case 7:
-            page = _context.v;
-            _context.n = 8;
-            return page.getTextContent();
-          case 8:
-            tc = _context.v;
-            // 依 y 由上到下、x 由左到右排序
-            items = tc.items.sort(function (a, b) {
-              var dy = Math.round(b.transform[5] - a.transform[5]);
-              return dy !== 0 ? dy : a.transform[4] - b.transform[4];
-            });
-            fullText += items.map(function (it) {
-              return it.str;
-            }).join(" ") + "\n";
-          case 9:
-            p++;
-            _context.n = 6;
-            break;
-          case 10:
-            result = parseText(fullText);
-            setPreview(result);
-            setPhase("preview");
-            _context.n = 12;
-            break;
-          case 11:
-            _context.p = 11;
-            _t = _context.v;
-            setErrMsg(_t.message);
-            setPhase("error");
-          case 12:
-            return _context.a(2);
-        }
-      }, _callee, null, [[2, 11]]);
-    }));
-    return function handlePdfFile(_x) {
-      return _ref1.apply(this, arguments);
-    };
-  }();
-
-  // ── 解析貼上的文字 ──
-  var handlePasteImport = function handlePasteImport() {
+  const handlePdfFile = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    e.target.value = "";
+    setPhase("parsing");
     setErrMsg("");
     try {
-      var result = parseText(pasteText);
+      await loadPdfJs();
+      const buf = await file.arrayBuffer();
+      const pdf = await window.pdfjsLib.getDocument({ data: buf }).promise;
+      let fullText = "";
+      for (let p = 1; p <= pdf.numPages; p++) {
+        const page = await pdf.getPage(p);
+        const tc   = await page.getTextContent();
+        // 依 y 由上到下、x 由左到右排序
+        const items = tc.items.sort((a, b) => {
+          const dy = Math.round(b.transform[5] - a.transform[5]);
+          return dy !== 0 ? dy : a.transform[4] - b.transform[4];
+        });
+        fullText += items.map((it) => it.str).join(" ") + "\n";
+      }
+      const result = parseText(fullText);
+      setPreview(result);
+      setPhase("preview");
+    } catch (err) {
+      setErrMsg(err.message);
+      setPhase("error");
+    }
+  };
+
+  // ── 解析貼上的文字 ──
+  const handlePasteImport = () => {
+    setErrMsg("");
+    try {
+      const result = parseText(pasteText);
       setPreview(result);
       setPhase("preview");
     } catch (err) {
@@ -1591,25 +1350,28 @@ function PdfImportSection(_ref0) {
   };
 
   // ── 確認轉入（含覆蓋判斷）──
-  var confirmImport = function confirmImport() {
-    var year = preview.year,
-      month = preview.month,
-      empMap = preview.empMap,
-      days = preview.days;
-    var k = monthKey(year, month);
+  const confirmImport = () => {
+    const { year, month, empMap, days } = preview;
+    const k = monthKey(year, month);
 
     // 判斷是否已有舊資料
-    var hasOldData = !!schedules[k];
+    const hasOldData = !!schedules[k];
     if (hasOldData) {
       // 有舊資料 → 強制詢問是否覆蓋
-      var rocY = year - 1911;
-      var ok = window.confirm("【覆蓋確認】\n\n" + "民國 " + rocY + " 年 " + month + " 月（西元 " + year + " 年）\n" + "已有班表資料存在。\n\n" + "確定要刪除舊資料並匯入新的 PDF 班表嗎？\n" + "（此操作無法復原）");
+      const rocY = year - 1911;
+      const ok = window.confirm(
+        "【覆蓋確認】\n\n" +
+        "民國 " + rocY + " 年 " + month + " 月（西元 " + year + " 年）\n" +
+        "已有班表資料存在。\n\n" +
+        "確定要刪除舊資料並匯入新的 PDF 班表嗎？\n" +
+        "（此操作無法復原）"
+      );
       if (!ok) return; // 取消 → 留在 preview 繼續等待
     }
 
     // 建立完整員工班表（PDF 中沒出現的員工填空）
-    var fullMap = {};
-    employees.forEach(function (emp) {
+    const fullMap = {};
+    employees.forEach((emp) => {
       fullMap[emp.id] = empMap[emp.id] || Array(days).fill("-");
     });
 
@@ -1621,450 +1383,334 @@ function PdfImportSection(_ref0) {
   };
 
   // ── 輔助：查員工姓名 ──
-  var empName = function empName(id) {
-    var _employees$find2;
-    return ((_employees$find2 = employees.find(function (e) {
-      return e.id === id;
-    })) === null || _employees$find2 === void 0 ? void 0 : _employees$find2.name) || id;
-  };
+  const empName = (id) => employees.find((e) => e.id === id)?.name || id;
 
   // ── 已解析月份是否已有資料 ──
-  var previewHasOld = preview ? !!schedules[monthKey(preview.year, preview.month)] : false;
-  return /*#__PURE__*/React.createElement("div", {
-    style: {
+  const previewHasOld = preview ? !!schedules[monthKey(preview.year, preview.month)] : false;
+
+  return (
+    <div style={{
       background: "#faf5ff",
       border: "2px solid #a78bfa",
       borderRadius: 12,
-      padding: 20
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      alignItems: "center",
-      gap: 10,
-      marginBottom: 6
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: {
-      background: "#7c3aed",
-      color: "#fff",
-      borderRadius: 6,
-      padding: "3px 10px",
-      fontSize: 17,
-      fontWeight: 700
-    }
-  }, "PDF \u8F49\u5165"), /*#__PURE__*/React.createElement("h3", {
-    style: {
-      margin: 0,
-      fontSize: 21,
-      fontWeight: 500,
-      color: "#4c1d95"
-    }
-  }, "PDF \u73ED\u8868\u532F\u5165")), /*#__PURE__*/React.createElement("p", {
-    style: {
-      margin: "0 0 14px",
-      fontSize: 18,
-      color: "#6d28d9",
-      lineHeight: 1.6
-    }
-  }, "\u4E0A\u50B3\u73ED\u8868 PDF\uFF0C\u7CFB\u7D71\u81EA\u52D5\u8FA8\u8B58\u5E74\u6708\u8207\u73ED\u5225\uFF0C\u9810\u89BD\u78BA\u8A8D\u5F8C\u518D\u5BEB\u5165\u3002 \u82E5\u8A72\u6708\u4EFD\u5DF2\u6709\u8CC7\u6599\uFF0C\u5C07\u8A62\u554F\u662F\u5426\u8986\u84CB\u3002"), (phase === "idle" || phase === "error") && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      gap: 10,
-      flexWrap: "wrap",
-      marginBottom: 12
-    }
-  }, /*#__PURE__*/React.createElement("label", {
-    style: {
-      background: "#7c3aed",
-      color: "#fff",
-      padding: "9px 18px",
-      borderRadius: 6,
-      cursor: "pointer",
-      display: "inline-block",
-      fontSize: 20,
-      fontWeight: 500,
-      fontFamily: "inherit"
-    }
-  }, "\u4E0A\u50B3 PDF \u73ED\u8868", /*#__PURE__*/React.createElement("input", {
-    type: "file",
-    accept: ".pdf,application/pdf",
-    onChange: handlePdfFile,
-    style: {
-      display: "none"
-    }
-  })), /*#__PURE__*/React.createElement("button", {
-    onClick: function onClick() {
-      return setShowPaste(function (v) {
-        return !v;
-      });
-    },
-    style: {
-      padding: "9px 14px",
-      background: "transparent",
-      color: "#7c3aed",
-      border: "1px solid #a78bfa",
-      borderRadius: 6,
-      cursor: "pointer",
-      fontSize: 18,
-      fontFamily: "inherit"
-    }
-  }, showPaste ? "收起文字貼上" : "改用文字貼上（備用）")), showPaste && /*#__PURE__*/React.createElement("div", {
-    style: {
-      background: "#fff",
-      border: "1px solid #c4b5fd",
-      borderRadius: 8,
-      padding: 14,
-      marginBottom: 10
-    }
-  }, /*#__PURE__*/React.createElement("p", {
-    style: {
-      margin: "0 0 8px",
-      fontSize: 17,
-      color: "#6b7280"
-    }
-  }, "\u5728 PDF \u95B1\u8B80\u5668\u4E2D\u6309 Ctrl+A \u5168\u9078 \u2192 Ctrl+C \u8907\u88FD\uFF0C\u518D\u8CBC\u5230\u4E0B\u65B9\uFF1A"), /*#__PURE__*/React.createElement("textarea", {
-    value: pasteText,
-    onChange: function onChange(e) {
-      return setPasteText(e.target.value);
-    },
-    placeholder: "貼上從 PDF 複製的文字...\n\n例：115年5月班表\nN0935 陳志偉 3D OFF D D D OFF...",
-    style: {
-      width: "100%",
-      height: 130,
-      padding: "8px 10px",
-      border: "1px solid #c4b5fd",
-      borderRadius: 6,
-      fontSize: 17,
-      fontFamily: "monospace",
-      boxSizing: "border-box",
-      resize: "vertical",
-      background: "#fff"
-    }
-  }), /*#__PURE__*/React.createElement("button", {
-    onClick: handlePasteImport,
-    disabled: !pasteText.trim(),
-    style: {
-      marginTop: 8,
-      padding: "7px 16px",
-      background: pasteText.trim() ? "#7c3aed" : "#9ca3af",
-      color: "#fff",
-      border: "none",
-      borderRadius: 6,
-      cursor: pasteText.trim() ? "pointer" : "not-allowed",
-      fontSize: 18,
-      fontFamily: "inherit"
-    }
-  }, "\u89E3\u6790\u6587\u5B57")), phase === "error" && /*#__PURE__*/React.createElement("div", {
-    style: {
-      padding: "10px 14px",
-      background: "#fef2f2",
-      border: "1px solid #fecaca",
-      borderRadius: 6,
-      fontSize: 18,
-      color: "#b91c1c",
-      whiteSpace: "pre-line",
-      lineHeight: 1.7
-    }
-  }, "\u2717 ", errMsg)), phase === "parsing" && /*#__PURE__*/React.createElement("div", {
-    style: {
-      padding: "24px 0",
-      textAlign: "center",
-      color: "#7c3aed",
-      fontSize: 20
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 39,
-      marginBottom: 8
-    }
-  }, "\u23F3"), "\u89E3\u6790 PDF \u4E2D\uFF0C\u8ACB\u7A0D\u5019..."), phase === "preview" && preview && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      flexWrap: "wrap",
-      gap: 16,
-      background: "#ede9fe",
-      borderRadius: 8,
-      padding: "10px 16px",
-      marginBottom: 12,
-      alignItems: "center"
-    }
-  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 15,
-      color: "#7c3aed"
-    }
-  }, "\u8FA8\u8B58\u6708\u4EFD"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 24,
-      fontWeight: 700,
-      color: "#4c1d95"
-    }
-  }, "\u6C11\u570B ", preview.year - 1911, " \u5E74 ", preview.month, " \u6708"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 15,
-      color: "#8b5cf6"
-    }
-  }, "\u897F\u5143 ", preview.year, " \u5E74")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 15,
-      color: "#7c3aed"
-    }
-  }, "\u8FA8\u8B58\u54E1\u5DE5\u6578"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 24,
-      fontWeight: 700,
-      color: "#4c1d95"
-    }
-  }, Object.keys(preview.empMap).length, " \u4EBA")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 15,
-      color: "#7c3aed"
-    }
-  }, "\u6708\u4EFD\u5929\u6578"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 24,
-      fontWeight: 700,
-      color: "#4c1d95"
-    }
-  }, preview.days, " \u5929")), previewHasOld && /*#__PURE__*/React.createElement("div", {
-    style: {
-      padding: "8px 14px",
-      background: "#fef3c7",
-      border: "1px solid #fcd34d",
-      borderRadius: 6,
-      fontSize: 18,
-      color: "#92400e",
-      fontWeight: 500,
-      lineHeight: 1.5
-    }
-  }, "\u26A0 \u6B64\u6708\u4EFD\u5DF2\u6709\u73ED\u8868\u8CC7\u6599", /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: 15,
-      fontWeight: 400
-    }
-  }, "\u6309\u300C\u78BA\u8A8D\u8F49\u5165\u300D\u5F8C\u5C07\u8A62\u554F\u662F\u5426\u8986\u84CB"))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      overflowX: "auto",
-      marginBottom: 14,
-      border: "1px solid #ddd6fe",
-      borderRadius: 8
-    }
-  }, /*#__PURE__*/React.createElement("table", {
-    style: {
-      borderCollapse: "collapse",
-      fontSize: 15,
-      width: "100%"
-    }
-  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", {
-    style: {
-      background: "#ede9fe"
-    }
-  }, /*#__PURE__*/React.createElement("th", {
-    style: {
-      padding: "5px 10px",
-      textAlign: "left",
-      color: "#4c1d95",
-      minWidth: 100
-    }
-  }, "\u54E1\u5DE5"), Array.from({
-    length: preview.days
-  }, function (_, i) {
-    var dow = new Date(preview.year, preview.month - 1, i + 1).getDay();
-    return /*#__PURE__*/React.createElement("th", {
-      key: i,
-      style: {
-        padding: "3px 1px",
-        textAlign: "center",
-        color: dow === 0 ? "#b91c1c" : dow === 6 ? "#1d4ed8" : "#4c1d95",
-        fontSize: 14,
-        width: 24
-      }
-    }, i + 1);
-  }))), /*#__PURE__*/React.createElement("tbody", null, Object.entries(preview.empMap).map(function (_ref10, ri) {
-    var _ref11 = _slicedToArray(_ref10, 2),
-      id = _ref11[0],
-      shifts = _ref11[1];
-    return /*#__PURE__*/React.createElement("tr", {
-      key: id,
-      style: {
-        background: ri % 2 === 0 ? "#fff" : "#faf5ff",
-        borderBottom: "1px solid #ede9fe"
-      }
-    }, /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: "4px 10px",
-        whiteSpace: "nowrap",
-        color: "#4c1d95",
-        fontWeight: 500
-      }
-    }, empName(id), " ", /*#__PURE__*/React.createElement("span", {
-      style: {
-        color: "#a78bfa",
-        fontWeight: 400,
-        fontSize: 14
-      }
-    }, id)), shifts.map(function (sh, di) {
-      var bgMap = {
-        D: "#90CAF9",
-        E: "#FED7AA",
-        N: "#3949AB",
-        OFF: "#E5E7EB"
-      };
-      var fgMap = {
-        D: "#1e3a5f",
-        E: "#7c2d12",
-        N: "#fff",
-        OFF: "#6b7280"
-      };
-      return /*#__PURE__*/React.createElement("td", {
-        key: di,
-        style: {
-          padding: "2px 1px",
-          textAlign: "center"
-        }
-      }, /*#__PURE__*/React.createElement("span", {
-        style: {
-          display: "inline-block",
-          width: 22,
-          height: 18,
-          borderRadius: 2,
-          lineHeight: "18px",
-          background: bgMap[sh] || "transparent",
-          color: fgMap[sh] || "#ccc",
-          fontSize: 11,
-          fontWeight: 700,
-          textAlign: "center"
-        }
-      }, sh === "-" ? "" : sh));
-    }));
-  })))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      gap: 10,
-      alignItems: "center"
-    }
-  }, /*#__PURE__*/React.createElement("button", {
-    onClick: confirmImport,
-    style: {
-      padding: "9px 20px",
-      background: "#16a34a",
-      color: "#fff",
-      border: "none",
-      borderRadius: 6,
-      cursor: "pointer",
-      fontSize: 20,
-      fontWeight: 500,
-      fontFamily: "inherit"
-    }
-  }, "\u78BA\u8A8D\u8F49\u5165", previewHasOld ? "（將詢問覆蓋）" : ""), /*#__PURE__*/React.createElement("button", {
-    onClick: function onClick() {
-      setPhase("idle");
-      setPreview(null);
-    },
-    style: {
-      padding: "9px 16px",
-      background: "#fff",
-      color: "#6b7280",
-      border: "1px solid #d1d5db",
-      borderRadius: 6,
-      cursor: "pointer",
-      fontSize: 18,
-      fontFamily: "inherit"
-    }
-  }, "\u53D6\u6D88"))), phase === "done" && /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      alignItems: "center",
-      gap: 12
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      flex: 1,
-      padding: "10px 16px",
-      background: "#f0fdf4",
-      border: "1px solid #bbf7d0",
-      borderRadius: 6,
-      fontSize: 18,
-      color: "#15803d"
-    }
-  }, "\u2713 \u73ED\u8868\u5DF2\u6210\u529F\u8F49\u5165\uFF01\u5DF2\u81EA\u52D5\u5207\u63DB\u5230\u8A72\u6708\u73ED\u8868\u9801\u7C64\u3002"), /*#__PURE__*/React.createElement("button", {
-    onClick: function onClick() {
-      setPhase("idle");
-      setErrMsg("");
-    },
-    style: {
-      padding: "9px 14px",
-      background: "#7c3aed",
-      color: "#fff",
-      border: "none",
-      borderRadius: 6,
-      cursor: "pointer",
-      fontSize: 18,
-      fontFamily: "inherit",
-      whiteSpace: "nowrap"
-    }
-  }, "\u518D\u8F49\u5165\u4E00\u4EFD")));
+      padding: 20,
+    }}>
+      {/* 標題列 */}
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+        <span style={{
+          background: "#7c3aed", color: "#fff",
+          borderRadius: 6, padding: "3px 10px", fontSize: 17, fontWeight: 700,
+        }}>PDF 轉入</span>
+        <h3 style={{ margin: 0, fontSize: 21, fontWeight: 500, color: "#4c1d95" }}>
+          PDF 班表匯入
+        </h3>
+      </div>
+      <p style={{ margin: "0 0 14px", fontSize: 18, color: "#6d28d9", lineHeight: 1.6 }}>
+        上傳班表 PDF，系統自動辨識年月與班別，預覽確認後再寫入。
+        若該月份已有資料，將詢問是否覆蓋。
+      </p>
+
+      {/* ── idle / error：上傳區 ── */}
+      {(phase === "idle" || phase === "error") && (
+        <div>
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 12 }}>
+            {/* 主要按鈕：上傳 PDF */}
+            <label style={{
+              background: "#7c3aed", color: "#fff",
+              padding: "9px 18px", borderRadius: 6,
+              cursor: "pointer", display: "inline-block",
+              fontSize: 20, fontWeight: 500, fontFamily: "inherit",
+            }}>
+              上傳 PDF 班表
+              <input
+                type="file"
+                accept=".pdf,application/pdf"
+                onChange={handlePdfFile}
+                style={{ display: "none" }}
+              />
+            </label>
+
+            {/* 備用：文字貼上 */}
+            <button
+              onClick={() => setShowPaste((v) => !v)}
+              style={{
+                padding: "9px 14px", background: "transparent",
+                color: "#7c3aed", border: "1px solid #a78bfa",
+                borderRadius: 6, cursor: "pointer",
+                fontSize: 18, fontFamily: "inherit",
+              }}
+            >
+              {showPaste ? "收起文字貼上" : "改用文字貼上（備用）"}
+            </button>
+          </div>
+
+          {/* 文字貼上展開區 */}
+          {showPaste && (
+            <div style={{
+              background: "#fff", border: "1px solid #c4b5fd",
+              borderRadius: 8, padding: 14, marginBottom: 10,
+            }}>
+              <p style={{ margin: "0 0 8px", fontSize: 17, color: "#6b7280" }}>
+                在 PDF 閱讀器中按 Ctrl+A 全選 → Ctrl+C 複製，再貼到下方：
+              </p>
+              <textarea
+                value={pasteText}
+                onChange={(e) => setPasteText(e.target.value)}
+                placeholder={"貼上從 PDF 複製的文字...\n\n例：115年5月班表\nN0935 陳志偉 3D OFF D D D OFF..."}
+                style={{
+                  width: "100%", height: 130, padding: "8px 10px",
+                  border: "1px solid #c4b5fd", borderRadius: 6,
+                  fontSize: 17, fontFamily: "monospace",
+                  boxSizing: "border-box", resize: "vertical", background: "#fff",
+                }}
+              />
+              <button
+                onClick={handlePasteImport}
+                disabled={!pasteText.trim()}
+                style={{
+                  marginTop: 8,
+                  padding: "7px 16px",
+                  background: pasteText.trim() ? "#7c3aed" : "#9ca3af",
+                  color: "#fff", border: "none", borderRadius: 6,
+                  cursor: pasteText.trim() ? "pointer" : "not-allowed",
+                  fontSize: 18, fontFamily: "inherit",
+                }}
+              >
+                解析文字
+              </button>
+            </div>
+          )}
+
+          {/* 錯誤訊息 */}
+          {phase === "error" && (
+            <div style={{
+              padding: "10px 14px", background: "#fef2f2",
+              border: "1px solid #fecaca", borderRadius: 6,
+              fontSize: 18, color: "#b91c1c", whiteSpace: "pre-line",
+              lineHeight: 1.7,
+            }}>
+              ✗ {errMsg}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── parsing：解析中 ── */}
+      {phase === "parsing" && (
+        <div style={{
+          padding: "24px 0", textAlign: "center",
+          color: "#7c3aed", fontSize: 20,
+        }}>
+          <div style={{ fontSize: 39, marginBottom: 8 }}>⏳</div>
+          解析 PDF 中，請稍候...
+        </div>
+      )}
+
+      {/* ── preview：預覽確認 ── */}
+      {phase === "preview" && preview && (
+        <div>
+          {/* 辨識結果摘要 */}
+          <div style={{
+            display: "flex", flexWrap: "wrap", gap: 16,
+            background: "#ede9fe", borderRadius: 8,
+            padding: "10px 16px", marginBottom: 12,
+            alignItems: "center",
+          }}>
+            <div>
+              <div style={{ fontSize: 15, color: "#7c3aed" }}>辨識月份</div>
+              <div style={{ fontSize: 24, fontWeight: 700, color: "#4c1d95" }}>
+                民國 {preview.year - 1911} 年 {preview.month} 月
+              </div>
+              <div style={{ fontSize: 15, color: "#8b5cf6" }}>西元 {preview.year} 年</div>
+            </div>
+            <div>
+              <div style={{ fontSize: 15, color: "#7c3aed" }}>辨識員工數</div>
+              <div style={{ fontSize: 24, fontWeight: 700, color: "#4c1d95" }}>
+                {Object.keys(preview.empMap).length} 人
+              </div>
+            </div>
+            <div>
+              <div style={{ fontSize: 15, color: "#7c3aed" }}>月份天數</div>
+              <div style={{ fontSize: 24, fontWeight: 700, color: "#4c1d95" }}>
+                {preview.days} 天
+              </div>
+            </div>
+
+            {/* 舊資料警示 */}
+            {previewHasOld && (
+              <div style={{
+                padding: "8px 14px", background: "#fef3c7",
+                border: "1px solid #fcd34d", borderRadius: 6,
+                fontSize: 18, color: "#92400e", fontWeight: 500,
+                lineHeight: 1.5,
+              }}>
+                ⚠ 此月份已有班表資料<br/>
+                <span style={{ fontSize: 15, fontWeight: 400 }}>
+                  按「確認轉入」後將詢問是否覆蓋
+                </span>
+              </div>
+            )}
+          </div>
+
+          {/* 班別預覽表格 */}
+          <div style={{
+            overflowX: "auto", marginBottom: 14,
+            border: "1px solid #ddd6fe", borderRadius: 8,
+          }}>
+            <table style={{ borderCollapse: "collapse", fontSize: 15, width: "100%" }}>
+              <thead>
+                <tr style={{ background: "#ede9fe" }}>
+                  <th style={{
+                    padding: "5px 10px", textAlign: "left",
+                    color: "#4c1d95", minWidth: 100,
+                  }}>員工</th>
+                  {Array.from({ length: preview.days }, (_, i) => {
+                    const dow = new Date(preview.year, preview.month - 1, i + 1).getDay();
+                    return (
+                      <th key={i} style={{
+                        padding: "3px 1px", textAlign: "center",
+                        color: dow === 0 ? "#b91c1c" : dow === 6 ? "#1d4ed8" : "#4c1d95",
+                        fontSize: 14, width: 24,
+                      }}>
+                        {i + 1}
+                      </th>
+                    );
+                  })}
+                </tr>
+              </thead>
+              <tbody>
+                {Object.entries(preview.empMap).map(([id, shifts], ri) => (
+                  <tr key={id} style={{
+                    background: ri % 2 === 0 ? "#fff" : "#faf5ff",
+                    borderBottom: "1px solid #ede9fe",
+                  }}>
+                    <td style={{
+                      padding: "4px 10px", whiteSpace: "nowrap",
+                      color: "#4c1d95", fontWeight: 500,
+                    }}>
+                      {empName(id)}{" "}
+                      <span style={{ color: "#a78bfa", fontWeight: 400, fontSize: 14 }}>
+                        {id}
+                      </span>
+                    </td>
+                    {shifts.map((sh, di) => {
+                      const bgMap = { D: "#90CAF9", E: "#FED7AA", N: "#3949AB", OFF: "#E5E7EB" };
+                      const fgMap = { D: "#1e3a5f", E: "#7c2d12", N: "#fff", OFF: "#6b7280" };
+                      return (
+                        <td key={di} style={{ padding: "2px 1px", textAlign: "center" }}>
+                          <span style={{
+                            display: "inline-block", width: 22, height: 18,
+                            borderRadius: 2, lineHeight: "18px",
+                            background: bgMap[sh] || "transparent",
+                            color: fgMap[sh] || "#ccc",
+                            fontSize: 11, fontWeight: 700, textAlign: "center",
+                          }}>
+                            {sh === "-" ? "" : sh}
+                          </span>
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* 操作按鈕 */}
+          <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+            <button onClick={confirmImport} style={{
+              padding: "9px 20px", background: "#16a34a",
+              color: "#fff", border: "none", borderRadius: 6,
+              cursor: "pointer", fontSize: 20, fontWeight: 500,
+              fontFamily: "inherit",
+            }}>
+              確認轉入{previewHasOld ? "（將詢問覆蓋）" : ""}
+            </button>
+            <button
+              onClick={() => { setPhase("idle"); setPreview(null); }}
+              style={{
+                padding: "9px 16px", background: "#fff",
+                color: "#6b7280", border: "1px solid #d1d5db",
+                borderRadius: 6, cursor: "pointer",
+                fontSize: 18, fontFamily: "inherit",
+              }}
+            >
+              取消
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ── done：完成 ── */}
+      {phase === "done" && (
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <div style={{
+            flex: 1, padding: "10px 16px",
+            background: "#f0fdf4", border: "1px solid #bbf7d0",
+            borderRadius: 6, fontSize: 18, color: "#15803d",
+          }}>
+            ✓ 班表已成功轉入！已自動切換到該月班表頁籤。
+          </div>
+          <button
+            onClick={() => { setPhase("idle"); setErrMsg(""); }}
+            style={{
+              padding: "9px 14px", background: "#7c3aed",
+              color: "#fff", border: "none", borderRadius: 6,
+              cursor: "pointer", fontSize: 18, fontFamily: "inherit",
+              whiteSpace: "nowrap",
+            }}
+          >
+            再轉入一份
+          </button>
+        </div>
+      )}
+    </div>
+  );
 }
-function DataTab(_ref12) {
-  var employees = _ref12.employees,
-    shiftDefs = _ref12.shiftDefs,
-    schedules = _ref12.schedules,
-    onImport = _ref12.onImport,
-    onAddSchedule = _ref12.onAddSchedule;
-  var _useState23 = useState(null),
-    _useState24 = _slicedToArray(_useState23, 2),
-    message = _useState24[0],
-    setMessage = _useState24[1];
+
+function DataTab({ employees, shiftDefs, schedules, onImport, onAddSchedule }) {
+  const [message, setMessage] = useState(null);
 
   /** 匯出 XML 並下載 */
-  var exportXml = function exportXml() {
-    var xml = serializeToXml({
-      employees: employees,
-      shiftDefs: shiftDefs,
-      schedules: schedules
-    });
-    var blob = new Blob([xml], {
-      type: "application/xml;charset=utf-8"
-    });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement("a");
-    var d = new Date();
+  const exportXml = () => {
+    const xml = serializeToXml({ employees, shiftDefs, schedules });
+    const blob = new Blob([xml], { type: "application/xml;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const d = new Date();
     a.href = url;
-    a.download = "\u73ED\u8868_".concat(d.getFullYear()).concat(String(d.getMonth() + 1).padStart(2, "0")).concat(String(d.getDate()).padStart(2, "0"), ".xml");
+    a.download = `班表_${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, "0")}${String(d.getDate()).padStart(2, "0")}.xml`;
     a.click();
     URL.revokeObjectURL(url);
     setMessage([true, "XML 檔案已匯出下載"]);
   };
 
   /** 匯入 XML 檔案 */
-  var importXml = function importXml(e) {
-    var _e$target$files2;
-    var file = (_e$target$files2 = e.target.files) === null || _e$target$files2 === void 0 ? void 0 : _e$target$files2[0];
+  const importXml = (e) => {
+    const file = e.target.files?.[0];
     if (!file) return;
     e.target.value = ""; // 重置，方便重複選檔
 
-    var fr = new FileReader();
-    fr.onload = function (ev) {
+    const fr = new FileReader();
+    fr.onload = (ev) => {
       try {
-        var data = parseFromXml(ev.target.result);
+        const data = parseFromXml(ev.target.result);
         if (!data.employees.length) {
           setMessage([false, "XML 內無員工資料"]);
           return;
         }
         // 檢查是否有重疊月份
-        var overlap = Object.keys(data.schedules).filter(function (k) {
-          return schedules[k];
-        });
+        const overlap = Object.keys(data.schedules).filter(
+          (k) => schedules[k]
+        );
         if (overlap.length) {
-          var labels = overlap.map(function (k) {
-            var _k$split = k.split("-"),
-              _k$split2 = _slicedToArray(_k$split, 2),
-              y = _k$split2[0],
-              m = _k$split2[1];
-            return "\u6C11\u570B ".concat(toROC(+y), " \u5E74 ").concat(m, " \u6708");
-          }).join("、");
-          if (!confirm("\u4EE5\u4E0B\u6708\u4EFD\u5DF2\u6709\u8CC7\u6599\uFF1A".concat(labels, "\n\u78BA\u5B9A\u8981\u8986\u84CB\u55CE\uFF1F"))) return;
+          const labels = overlap
+            .map((k) => {
+              const [y, m] = k.split("-");
+              return `民國 ${toROC(+y)} 年 ${m} 月`;
+            })
+            .join("、");
+          if (!confirm(`以下月份已有資料：${labels}\n確定要覆蓋嗎？`)) return;
         }
         onImport(data);
         setMessage([true, "XML 資料匯入成功"]);
@@ -2076,166 +1722,216 @@ function DataTab(_ref12) {
   };
 
   // 統計數字
-  var months = Object.keys(schedules).sort();
-  var totalRec = Object.values(schedules).reduce(function (s, em) {
-    return s + Object.values(em).reduce(function (s2, sh) {
-      return s2 + sh.filter(function (x) {
-        return x && x !== "-";
-      }).length;
-    }, 0);
-  }, 0);
-  return /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      flexDirection: "column",
-      gap: 16
-    }
-  }, /*#__PURE__*/React.createElement(PdfImportSection, {
-    employees: employees,
-    schedules: schedules,
-    onAddSchedule: onAddSchedule
-  }), /*#__PURE__*/React.createElement("div", {
-    style: card
-  }, /*#__PURE__*/React.createElement("h3", {
-    style: {
-      margin: "0 0 10px",
-      fontSize: 21,
-      fontWeight: 500,
-      color: "#1f2937"
-    }
-  }, "XML \u5099\u4EFD\u8207\u9084\u539F"), /*#__PURE__*/React.createElement("p", {
-    style: {
-      margin: "0 0 14px",
-      fontSize: 18,
-      color: "#6b7280",
-      lineHeight: 1.6
-    }
-  }, "\u6240\u6709\u73ED\u8868\u3001\u54E1\u5DE5\u3001\u73ED\u5225\u8A2D\u5B9A\u7686\u4EE5 XML \u683C\u5F0F\u5132\u5B58\u3002 \u5EFA\u8B70\u5B9A\u671F\u532F\u51FA\u4E26\u4E0A\u50B3\u81F3 Google Drive \u5099\u4EFD\u3002"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      gap: 10,
-      flexWrap: "wrap"
-    }
-  }, /*#__PURE__*/React.createElement("button", {
-    onClick: exportXml,
-    style: btn("#16a34a")
-  }, "\u532F\u51FA XML"), /*#__PURE__*/React.createElement("label", {
-    style: _objectSpread(_objectSpread({}, btn("#4f46e5")), {}, {
-      cursor: "pointer",
-      display: "inline-block"
-    })
-  }, "\u532F\u5165 XML", /*#__PURE__*/React.createElement("input", {
-    type: "file",
-    accept: ".xml,application/xml",
-    onChange: importXml,
-    style: {
-      display: "none"
-    }
-  })), /*#__PURE__*/React.createElement("a", {
-    href: "https://drive.google.com/drive/folders/1KaFaTW_YDupDZ2JpMuxHMu77fBVgXv2d",
-    target: "_blank",
-    rel: "noopener noreferrer",
-    style: _objectSpread(_objectSpread({}, btn("#1a73e8")), {}, {
-      textDecoration: "none",
-      display: "inline-block"
-    })
-  }, "Google Drive \u5099\u4EFD\u8CC7\u6599\u593E")), message && /*#__PURE__*/React.createElement("div", {
-    style: msg(message[0])
-  }, message[0] ? "✓ " : "✗ ", message[1])), /*#__PURE__*/React.createElement("div", {
-    style: card
-  }, /*#__PURE__*/React.createElement("h3", {
-    style: {
-      margin: "0 0 14px",
-      fontSize: 21,
-      fontWeight: 500,
-      color: "#1f2937"
-    }
-  }, "\u8CC7\u6599\u6458\u8981"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "grid",
-      gridTemplateColumns: "repeat(auto-fill, minmax(130px, 1fr))",
-      gap: 12
-    }
-  }, [["員工人數", employees.length + " 人"], ["班別種類", shiftDefs.length + " 種"], ["班表月份", months.length + " 個月"], ["班表記錄", totalRec + " 筆"]].map(function (_ref13) {
-    var _ref14 = _slicedToArray(_ref13, 2),
-      label = _ref14[0],
-      value = _ref14[1];
-    return /*#__PURE__*/React.createElement("div", {
-      key: label,
-      style: {
-        textAlign: "center",
-        padding: 14,
-        background: "#f0f9ff",
-        borderRadius: 8,
-        border: "1px solid #bae6fd"
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 31,
-        fontWeight: 500,
-        color: "#1b6ca8"
-      }
-    }, value), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 15,
-        color: "#6b7280",
-        marginTop: 4
-      }
-    }, label));
-  }))), months.length > 0 && /*#__PURE__*/React.createElement("div", {
-    style: card
-  }, /*#__PURE__*/React.createElement("h3", {
-    style: {
-      margin: "0 0 12px",
-      fontSize: 21,
-      fontWeight: 500,
-      color: "#1f2937"
-    }
-  }, "\u5DF2\u5132\u5B58\u7684\u73ED\u8868\u6708\u4EFD"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      flexWrap: "wrap",
-      gap: 8
-    }
-  }, months.map(function (k) {
-    var _k$split3 = k.split("-"),
-      _k$split4 = _slicedToArray(_k$split3, 2),
-      y = _k$split4[0],
-      m = _k$split4[1];
-    return /*#__PURE__*/React.createElement("span", {
-      key: k,
-      style: {
-        padding: "4px 14px",
-        background: "#eff6ff",
-        color: "#1d4ed8",
-        borderRadius: 20,
-        fontSize: 18,
-        fontWeight: 500,
-        border: "1px solid #bfdbfe"
-      }
-    }, "\u6C11\u570B ", toROC(+y), " \u5E74 ", m, " \u6708\uFF08\u897F\u5143 ", y, " \u5E74\uFF09");
-  }))), /*#__PURE__*/React.createElement("div", {
-    style: _objectSpread(_objectSpread({}, card), {}, {
-      background: "#fffbeb",
-      border: "1px solid #fde68a"
-    })
-  }, /*#__PURE__*/React.createElement("h4", {
-    style: {
-      margin: "0 0 8px",
-      fontSize: 18,
-      fontWeight: 500,
-      color: "#92400e"
-    }
-  }, "\u64CD\u4F5C\u8AAA\u660E"), /*#__PURE__*/React.createElement("ul", {
-    style: {
-      margin: 0,
-      paddingLeft: 16,
-      fontSize: 17,
-      color: "#92400e",
-      lineHeight: 1.9
-    }
-  }, /*#__PURE__*/React.createElement("li", null, "\u8CC7\u6599\u81EA\u52D5\u5132\u5B58\u65BC\u700F\u89BD\u5668\uFF0C\u91CD\u65B0\u958B\u555F\u5F8C\u4ECD\u4FDD\u7559"), /*#__PURE__*/React.createElement("li", null, "\u5EFA\u8B70\u6BCF\u6708\u5B9A\u671F\u532F\u51FA XML\uFF0C\u518D\u4E0A\u50B3\u81F3 Google Drive"), /*#__PURE__*/React.createElement("li", null, "\u532F\u5165 XML \u6642\u82E5\u6709\u91CD\u8907\u6708\u4EFD\uFF0C\u7CFB\u7D71\u6703\u8A62\u554F\u662F\u5426\u8986\u84CB"), /*#__PURE__*/React.createElement("li", null, "\u6C11\u570B\u5E74\u63DB\u7B97\uFF1A\u6C11\u570B 115 \u5E74 = \u897F\u5143 2026 \u5E74\uFF08115 + 1911 = 2026\uFF09"))));
+  const months = Object.keys(schedules).sort();
+  const totalRec = Object.values(schedules).reduce(
+    (s, em) =>
+      s +
+      Object.values(em).reduce(
+        (s2, sh) => s2 + sh.filter((x) => x && x !== "-").length,
+        0
+      ),
+    0
+  );
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      {/* ── PDF 班表轉入（最優先，置頂）── */}
+      <PdfImportSection
+        employees={employees}
+        schedules={schedules}
+        onAddSchedule={onAddSchedule}
+      />
+
+      {/* ── XML 備份 ── */}
+      <div style={card}>
+        <h3
+          style={{
+            margin: "0 0 10px",
+            fontSize: 21,
+            fontWeight: 500,
+            color: "#1f2937",
+          }}
+        >
+          XML 備份與還原
+        </h3>
+        <p
+          style={{
+            margin: "0 0 14px",
+            fontSize: 18,
+            color: "#6b7280",
+            lineHeight: 1.6,
+          }}
+        >
+          所有班表、員工、班別設定皆以 XML 格式儲存。
+          建議定期匯出並上傳至 Google Drive 備份。
+        </p>
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+          <button onClick={exportXml} style={btn("#16a34a")}>
+            匯出 XML
+          </button>
+          <label
+            style={{
+              ...btn("#4f46e5"),
+              cursor: "pointer",
+              display: "inline-block",
+            }}
+          >
+            匯入 XML
+            <input
+              type="file"
+              accept=".xml,application/xml"
+              onChange={importXml}
+              style={{ display: "none" }}
+            />
+          </label>
+          <a
+            href="https://drive.google.com/drive/folders/1KaFaTW_YDupDZ2JpMuxHMu77fBVgXv2d"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              ...btn("#1a73e8"),
+              textDecoration: "none",
+              display: "inline-block",
+            }}
+          >
+            Google Drive 備份資料夾
+          </a>
+        </div>
+        {message && (
+          <div style={msg(message[0])}>
+            {message[0] ? "✓ " : "✗ "}
+            {message[1]}
+          </div>
+        )}
+      </div>
+
+      {/* ── 資料摘要 ── */}
+      <div style={card}>
+        <h3
+          style={{
+            margin: "0 0 14px",
+            fontSize: 21,
+            fontWeight: 500,
+            color: "#1f2937",
+          }}
+        >
+          資料摘要
+        </h3>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(130px, 1fr))",
+            gap: 12,
+          }}
+        >
+          {[
+            ["員工人數", employees.length + " 人"],
+            ["班別種類", shiftDefs.length + " 種"],
+            ["班表月份", months.length + " 個月"],
+            ["班表記錄", totalRec + " 筆"],
+          ].map(([label, value]) => (
+            <div
+              key={label}
+              style={{
+                textAlign: "center",
+                padding: 14,
+                background: "#f0f9ff",
+                borderRadius: 8,
+                border: "1px solid #bae6fd",
+              }}
+            >
+              <div
+                style={{ fontSize: 31, fontWeight: 500, color: "#1b6ca8" }}
+              >
+                {value}
+              </div>
+              <div
+                style={{ fontSize: 15, color: "#6b7280", marginTop: 4 }}
+              >
+                {label}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── 已儲存月份清單 ── */}
+      {months.length > 0 && (
+        <div style={card}>
+          <h3
+            style={{
+              margin: "0 0 12px",
+              fontSize: 21,
+              fontWeight: 500,
+              color: "#1f2937",
+            }}
+          >
+            已儲存的班表月份
+          </h3>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+            {months.map((k) => {
+              const [y, m] = k.split("-");
+              return (
+                <span
+                  key={k}
+                  style={{
+                    padding: "4px 14px",
+                    background: "#eff6ff",
+                    color: "#1d4ed8",
+                    borderRadius: 20,
+                    fontSize: 18,
+                    fontWeight: 500,
+                    border: "1px solid #bfdbfe",
+                  }}
+                >
+                  民國 {toROC(+y)} 年 {m} 月（西元 {y} 年）
+                </span>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* ── 操作說明 ── */}
+      <div
+        style={{
+          ...card,
+          background: "#fffbeb",
+          border: "1px solid #fde68a",
+        }}
+      >
+        <h4
+          style={{
+            margin: "0 0 8px",
+            fontSize: 18,
+            fontWeight: 500,
+            color: "#92400e",
+          }}
+        >
+          操作說明
+        </h4>
+        <ul
+          style={{
+            margin: 0,
+            paddingLeft: 16,
+            fontSize: 17,
+            color: "#92400e",
+            lineHeight: 1.9,
+          }}
+        >
+          <li>資料自動儲存於瀏覽器，重新開啟後仍保留</li>
+          <li>建議每月定期匯出 XML，再上傳至 Google Drive</li>
+          <li>匯入 XML 時若有重複月份，系統會詢問是否覆蓋</li>
+          <li>
+            民國年換算：民國 115 年 = 西元 2026 年（115 + 1911 = 2026）
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  );
 }
+
 
 // ═══════════════════════════════════════
 // 九、手機版班表元件（月曆式 + 員工選擇）
@@ -2248,314 +1944,226 @@ function DataTab(_ref12) {
  * - 點格子可修改班別
  * - 底部顯示當月出勤統計
  */
-function MobileScheduleTab(_ref15) {
-  var _employees$;
-  var employees = _ref15.employees,
-    shiftDefs = _ref15.shiftDefs,
-    schedule = _ref15.schedule,
-    year = _ref15.year,
-    month = _ref15.month,
-    onUpdate = _ref15.onUpdate;
+function MobileScheduleTab({ employees, shiftDefs, schedule, year, month, onUpdate }) {
   // 預設選第一位員工
-  var _useState25 = useState(((_employees$ = employees[0]) === null || _employees$ === void 0 ? void 0 : _employees$.id) || ""),
-    _useState26 = _slicedToArray(_useState25, 2),
-    selEmpId = _useState26[0],
-    setSelEmpId = _useState26[1];
-  var _useState27 = useState(null),
-    _useState28 = _slicedToArray(_useState27, 2),
-    editing = _useState28[0],
-    setEditing = _useState28[1]; // dayIdx
+  const [selEmpId, setSelEmpId] = useState(employees[0]?.id || "");
+  const [editing, setEditing]   = useState(null); // dayIdx
 
-  var days = daysInMonth(year, month);
-  var firstDow = new Date(year, month - 1, 1).getDay(); // 1日是星期幾（0=日）
-  var emp = employees.find(function (e) {
-    return e.id === selEmpId;
-  }) || employees[0];
-  var empShifts = emp ? schedule[emp.id] || Array(days).fill("-") : [];
+  const days     = daysInMonth(year, month);
+  const firstDow = new Date(year, month - 1, 1).getDay(); // 1日是星期幾（0=日）
+  const emp      = employees.find((e) => e.id === selEmpId) || employees[0];
+  const empShifts = emp ? (schedule[emp.id] || Array(days).fill("-")) : [];
 
   /** 查找班別定義 */
-  var findSt = function findSt(code) {
-    return shiftDefs.find(function (s) {
-      return s.code === code;
-    }) || {
-      code: code,
-      fg: "#9ca3af",
-      bg: "#f3f4f6",
-      name: code
+  const findSt = (code) =>
+    shiftDefs.find((s) => s.code === code) || {
+      code, fg: "#9ca3af", bg: "#f3f4f6", name: code,
     };
-  };
 
   /** 當月統計 */
-  var cnt = {
-    D: 0,
-    E: 0,
-    N: 0,
-    OFF: 0
-  };
-  empShifts.forEach(function (s) {
-    if (cnt[s] !== undefined) cnt[s]++;
-  });
+  const cnt = { D: 0, E: 0, N: 0, OFF: 0 };
+  empShifts.forEach((s) => { if (cnt[s] !== undefined) cnt[s]++; });
 
   // 補全月曆前面的空格（上個月的日期）
-  var blanks = Array(firstDow).fill(null);
+  const blanks = Array(firstDow).fill(null);
   // 每格資料 [day, shift] 或 null（空格）
-  var cells = [].concat(_toConsumableArray(blanks), _toConsumableArray(Array.from({
-    length: days
-  }, function (_, i) {
-    return i;
-  })));
-  return /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      flexDirection: "column",
-      gap: 12
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      background: "#eff6ff",
-      border: "1px solid #bfdbfe",
-      borderRadius: 8,
-      padding: "10px 14px",
-      fontSize: 17,
-      color: "#1d4ed8",
-      lineHeight: 1.8
-    }
-  }, /*#__PURE__*/React.createElement("strong", null, "\u5982\u4F55\u4FEE\u6539\u73ED\u5225\uFF1A"), /*#__PURE__*/React.createElement("br", null), "\u2460 \u4E0B\u65B9\u9078\u64C7\u54E1\u5DE5\u3000\u2461 \u9EDE\u64CA\u6708\u66C6\u683C\u5B50\u3000\u2462 \u9078\u64C7\u65B0\u73ED\u5225"), /*#__PURE__*/React.createElement("div", {
-    style: _objectSpread(_objectSpread({}, card), {}, {
-      padding: "12px 16px"
-    })
-  }, /*#__PURE__*/React.createElement("label", {
-    style: _objectSpread(_objectSpread({}, lbl), {}, {
-      marginBottom: 6
-    })
-  }, "\u9078\u64C7\u54E1\u5DE5"), /*#__PURE__*/React.createElement("select", {
-    value: selEmpId,
-    onChange: function onChange(e) {
-      setSelEmpId(e.target.value);
-      setEditing(null);
-    },
-    style: {
-      width: "100%",
-      padding: "9px 12px",
-      borderRadius: 8,
-      border: "1px solid #d1d5db",
-      fontSize: 21,
-      background: "#fff",
-      color: "#1f2937",
-      fontFamily: "inherit",
-      appearance: "auto"
-    }
-  }, employees.map(function (e) {
-    return /*#__PURE__*/React.createElement("option", {
-      key: e.id,
-      value: e.id
-    }, e.name, "\u3000", e.id);
-  }))), /*#__PURE__*/React.createElement("div", {
-    style: card
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "grid",
-      gridTemplateColumns: "repeat(7, 1fr)",
-      gap: 3,
-      marginBottom: 4
-    }
-  }, WEEKDAY.map(function (w, i) {
-    return /*#__PURE__*/React.createElement("div", {
-      key: w,
-      style: {
-        textAlign: "center",
-        fontSize: 17,
-        fontWeight: 500,
-        padding: "4px 0",
-        color: i === 0 ? "#b91c1c" : i === 6 ? "#1d4ed8" : "#6b7280"
-      }
-    }, w);
-  })), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "grid",
-      gridTemplateColumns: "repeat(7, 1fr)",
-      gap: 3
-    }
-  }, cells.map(function (di, ci) {
-    if (di === null) {
-      // 空白格（補前月日期）
-      return /*#__PURE__*/React.createElement("div", {
-        key: "blank-".concat(ci),
-        style: {
-          height: 52
-        }
-      });
-    }
-    var d = di + 1;
-    var sh = empShifts[di] || "-";
-    var st = findSt(sh);
-    var dow = new Date(year, month - 1, d).getDay();
-    var isWeekend = dow === 0 || dow === 6;
-    var isEditing = editing === di;
-    var today = new Date();
-    var isToday = today.getFullYear() === year && today.getMonth() + 1 === month && today.getDate() === d;
-    return /*#__PURE__*/React.createElement("div", {
-      key: di,
-      style: {
-        borderRadius: 8,
-        border: isToday ? "2px solid #1b6ca8" : "1px solid #e5e7eb",
-        background: isEditing ? "#dbeafe" : isWeekend ? "#fffbeb" : "#fff",
-        overflow: "hidden",
-        cursor: "pointer"
-      },
-      title: "\u9EDE\u64CA\u4FEE\u6539\uFF1A".concat(month, "/").concat(di + 1, " \u76EE\u524D\u73ED\u5225\uFF1A").concat(sh === "-" ? "（無）" : sh),
-      onClick: function onClick() {
-        return setEditing(isEditing ? null : di);
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        textAlign: "center",
-        fontSize: 15,
-        color: dow === 0 ? "#b91c1c" : dow === 6 ? "#1d4ed8" : "#6b7280",
-        padding: "3px 0 1px",
-        fontWeight: isToday ? 700 : 400
-      }
-    }, d), /*#__PURE__*/React.createElement("div", {
-      style: {
-        margin: "0 3px 3px",
-        borderRadius: 4,
-        background: sh === "-" ? "transparent" : st.bg,
-        color: sh === "-" ? "transparent" : st.fg,
-        textAlign: "center",
-        fontSize: 15,
-        fontWeight: 700,
-        padding: "3px 0",
-        minHeight: 22
-      }
-    }, sh === "-" ? "" : sh));
-  }))), editing !== null && emp && /*#__PURE__*/React.createElement("div", {
-    style: _objectSpread(_objectSpread({}, card), {}, {
-      background: "#eff6ff",
-      border: "1px solid #bfdbfe"
-    })
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 18,
-      color: "#1d4ed8",
-      fontWeight: 500,
-      marginBottom: 8
-    }
-  }, emp.name, "\u30FB", month, "/", editing + 1, " \u4FEE\u6539\u73ED\u5225\uFF1A"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      flexWrap: "wrap",
-      gap: 8
-    }
-  }, shiftDefs.map(function (st) {
-    return /*#__PURE__*/React.createElement("button", {
-      key: st.code,
-      onClick: function onClick() {
-        onUpdate(emp.id, editing, st.code);
-        setEditing(null);
-      },
-      style: {
-        padding: "8px 14px",
-        border: empShifts[editing] === st.code ? "2px solid #1e3a5f" : "1px solid transparent",
-        borderRadius: 6,
-        background: st.bg,
-        color: st.fg,
-        fontSize: 20,
-        fontWeight: 700,
-        cursor: "pointer",
-        fontFamily: "inherit"
-      }
-    }, st.code, "\u3000", st.name);
-  }), /*#__PURE__*/React.createElement("button", {
-    onClick: function onClick() {
-      onUpdate(emp.id, editing, "-");
-      setEditing(null);
-    },
-    style: {
-      padding: "8px 14px",
-      border: "1px solid #d1d5db",
-      borderRadius: 6,
-      background: "#f9fafb",
-      color: "#6b7280",
-      fontSize: 20,
-      cursor: "pointer",
-      fontFamily: "inherit"
-    }
-  }, "\u6E05\u9664"), /*#__PURE__*/React.createElement("button", {
-    onClick: function onClick() {
-      return setEditing(null);
-    },
-    style: {
-      padding: "8px 14px",
-      border: "1px solid #d1d5db",
-      borderRadius: 6,
-      background: "#fff",
-      color: "#9ca3af",
-      fontSize: 20,
-      cursor: "pointer",
-      fontFamily: "inherit"
-    }
-  }, "\u53D6\u6D88"))), /*#__PURE__*/React.createElement("div", {
-    style: card
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 18,
-      color: "#6b7280",
-      marginBottom: 10
-    }
-  }, emp === null || emp === void 0 ? void 0 : emp.name, " \u672C\u6708\u51FA\u52E4\u7D71\u8A08"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "grid",
-      gridTemplateColumns: "repeat(4, 1fr)",
-      gap: 8
-    }
-  }, [{
-    label: "白班",
-    code: "D",
-    color: "#1d4ed8",
-    bg: "#eff6ff"
-  }, {
-    label: "小夜",
-    code: "E",
-    color: "#c2410c",
-    bg: "#fff7ed"
-  }, {
-    label: "大夜",
-    code: "N",
-    color: "#4338ca",
-    bg: "#eef2ff"
-  }, {
-    label: "例休",
-    code: "OFF",
-    color: "#6b7280",
-    bg: "#f9fafb"
-  }].map(function (_ref16) {
-    var label = _ref16.label,
-      code = _ref16.code,
-      color = _ref16.color,
-      bg = _ref16.bg;
-    return /*#__PURE__*/React.createElement("div", {
-      key: code,
-      style: {
-        textAlign: "center",
-        padding: "10px 4px",
-        background: bg,
-        borderRadius: 8,
-        border: "1px solid #e5e7eb"
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 31,
-        fontWeight: 700,
-        color: color
-      }
-    }, cnt[code]), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 15,
-        color: "#9ca3af",
-        marginTop: 3
-      }
-    }, label));
-  }))));
+  const cells  = [
+    ...blanks,
+    ...Array.from({ length: days }, (_, i) => i),
+  ];
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+
+      {/* ── 操作說明 ── */}
+      <div style={{
+        background: "#eff6ff", border: "1px solid #bfdbfe",
+        borderRadius: 8, padding: "10px 14px",
+        fontSize: 17, color: "#1d4ed8", lineHeight: 1.8,
+      }}>
+        <strong>如何修改班別：</strong><br/>
+        ① 下方選擇員工　② 點擊月曆格子　③ 選擇新班別
+      </div>
+
+      {/* ── 員工選擇器 ── */}
+      <div style={{ ...card, padding: "12px 16px" }}>
+        <label style={{ ...lbl, marginBottom: 6 }}>選擇員工</label>
+        <select
+          value={selEmpId}
+          onChange={(e) => { setSelEmpId(e.target.value); setEditing(null); }}
+          style={{
+            width: "100%", padding: "9px 12px", borderRadius: 8,
+            border: "1px solid #d1d5db", fontSize: 21,
+            background: "#fff", color: "#1f2937",
+            fontFamily: "inherit", appearance: "auto",
+          }}
+        >
+          {employees.map((e) => (
+            <option key={e.id} value={e.id}>
+              {e.name}　{e.id}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* ── 月曆格子 ── */}
+      <div style={card}>
+        {/* 星期標頭 */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 3, marginBottom: 4 }}>
+          {WEEKDAY.map((w, i) => (
+            <div
+              key={w}
+              style={{
+                textAlign: "center", fontSize: 17, fontWeight: 500, padding: "4px 0",
+                color: i === 0 ? "#b91c1c" : i === 6 ? "#1d4ed8" : "#6b7280",
+              }}
+            >
+              {w}
+            </div>
+          ))}
+        </div>
+
+        {/* 日期格子 */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 3 }}>
+          {cells.map((di, ci) => {
+            if (di === null) {
+              // 空白格（補前月日期）
+              return <div key={`blank-${ci}`} style={{ height: 52 }} />;
+            }
+            const d   = di + 1;
+            const sh  = empShifts[di] || "-";
+            const st  = findSt(sh);
+            const dow = new Date(year, month - 1, d).getDay();
+            const isWeekend = dow === 0 || dow === 6;
+            const isEditing = editing === di;
+            const today = new Date();
+            const isToday =
+              today.getFullYear() === year &&
+              today.getMonth() + 1 === month &&
+              today.getDate() === d;
+
+            return (
+              <div
+                key={di}
+                style={{
+                  borderRadius: 8,
+                  border: isToday ? "2px solid #1b6ca8" : "1px solid #e5e7eb",
+                  background: isEditing ? "#dbeafe" : isWeekend ? "#fffbeb" : "#fff",
+                  overflow: "hidden",
+                  cursor: "pointer",
+                }}
+                title={`點擊修改：${month}/${di+1} 目前班別：${sh === "-" ? "（無）" : sh}`}
+                onClick={() => setEditing(isEditing ? null : di)}
+              >
+                {/* 日期數字 */}
+                <div
+                  style={{
+                    textAlign: "center",
+                    fontSize: 15,
+                    color: dow === 0 ? "#b91c1c" : dow === 6 ? "#1d4ed8" : "#6b7280",
+                    padding: "3px 0 1px",
+                    fontWeight: isToday ? 700 : 400,
+                  }}
+                >
+                  {d}
+                </div>
+                {/* 班別徽章 */}
+                <div
+                  style={{
+                    margin: "0 3px 3px",
+                    borderRadius: 4,
+                    background: sh === "-" ? "transparent" : st.bg,
+                    color: sh === "-" ? "transparent" : st.fg,
+                    textAlign: "center",
+                    fontSize: 15,
+                    fontWeight: 700,
+                    padding: "3px 0",
+                    minHeight: 22,
+                  }}
+                >
+                  {sh === "-" ? "" : sh}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ── 班別選擇面板（點格子後出現） ── */}
+      {editing !== null && emp && (
+        <div style={{ ...card, background: "#eff6ff", border: "1px solid #bfdbfe" }}>
+          <div style={{ fontSize: 18, color: "#1d4ed8", fontWeight: 500, marginBottom: 8 }}>
+            {emp.name}・{month}/{editing + 1} 修改班別：
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+            {shiftDefs.map((st) => (
+              <button
+                key={st.code}
+                onClick={() => { onUpdate(emp.id, editing, st.code); setEditing(null); }}
+                style={{
+                  padding: "8px 14px",
+                  border: empShifts[editing] === st.code ? "2px solid #1e3a5f" : "1px solid transparent",
+                  borderRadius: 6,
+                  background: st.bg, color: st.fg,
+                  fontSize: 20, fontWeight: 700,
+                  cursor: "pointer", fontFamily: "inherit",
+                }}
+              >
+                {st.code}　{st.name}
+              </button>
+            ))}
+            <button
+              onClick={() => { onUpdate(emp.id, editing, "-"); setEditing(null); }}
+              style={{
+                padding: "8px 14px", border: "1px solid #d1d5db", borderRadius: 6,
+                background: "#f9fafb", color: "#6b7280", fontSize: 20,
+                cursor: "pointer", fontFamily: "inherit",
+              }}
+            >
+              清除
+            </button>
+            <button
+              onClick={() => setEditing(null)}
+              style={{
+                padding: "8px 14px", border: "1px solid #d1d5db", borderRadius: 6,
+                background: "#fff", color: "#9ca3af", fontSize: 20,
+                cursor: "pointer", fontFamily: "inherit",
+              }}
+            >
+              取消
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ── 當月出勤統計 ── */}
+      <div style={card}>
+        <div style={{ fontSize: 18, color: "#6b7280", marginBottom: 10 }}>
+          {emp?.name} 本月出勤統計
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
+          {[
+            { label: "白班", code: "D", color: "#1d4ed8", bg: "#eff6ff" },
+            { label: "小夜", code: "E", color: "#c2410c", bg: "#fff7ed" },
+            { label: "大夜", code: "N", color: "#4338ca", bg: "#eef2ff" },
+            { label: "例休", code: "OFF", color: "#6b7280", bg: "#f9fafb" },
+          ].map(({ label, code, color, bg }) => (
+            <div
+              key={code}
+              style={{
+                textAlign: "center", padding: "10px 4px",
+                background: bg, borderRadius: 8,
+                border: "1px solid #e5e7eb",
+              }}
+            >
+              <div style={{ fontSize: 31, fontWeight: 700, color }}>{cnt[code]}</div>
+              <div style={{ fontSize: 15, color: "#9ca3af", marginTop: 3 }}>{label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }
 
 // ═══════════════════════════════════════
@@ -2564,101 +2172,55 @@ function MobileScheduleTab(_ref15) {
 
 function App() {
   // 核心狀態
-  var _useState29 = useState(DEFAULT_EMPLOYEES),
-    _useState30 = _slicedToArray(_useState29, 2),
-    employees = _useState30[0],
-    setEmployees = _useState30[1];
-  var _useState31 = useState(DEFAULT_SHIFT_DEFS),
-    _useState32 = _slicedToArray(_useState31, 2),
-    shiftDefs = _useState32[0],
-    setShiftDefs = _useState32[1];
-  var _useState33 = useState(buildInitialSchedule),
-    _useState34 = _slicedToArray(_useState33, 2),
-    schedules = _useState34[0],
-    setSchedules = _useState34[1];
+  const [employees, setEmployees] = useState(DEFAULT_EMPLOYEES);
+  const [shiftDefs, setShiftDefs] = useState(DEFAULT_SHIFT_DEFS);
+  const [schedules, setSchedules] = useState(buildInitialSchedule);
 
   // UI 狀態
-  var _useState35 = useState(2026),
-    _useState36 = _slicedToArray(_useState35, 2),
-    year = _useState36[0],
-    setYear = _useState36[1];
-  var _useState37 = useState(4),
-    _useState38 = _slicedToArray(_useState37, 2),
-    month = _useState38[0],
-    setMonth = _useState38[1]; // 預設顯示最舊的已有月份
-  var _useState39 = useState("schedule"),
-    _useState40 = _slicedToArray(_useState39, 2),
-    tab = _useState40[0],
-    setTab = _useState40[1];
-  var _useState41 = useState(false),
-    _useState42 = _slicedToArray(_useState41, 2),
-    ready = _useState42[0],
-    setReady = _useState42[1]; // 資料是否載入完成
+  const [year, setYear]     = useState(2026);
+  const [month, setMonth]   = useState(4); // 預設顯示最舊的已有月份
+  const [tab, setTab]       = useState("schedule");
+  const [ready, setReady]   = useState(false); // 資料是否載入完成
   // 版面模式：auto 偵測視窗寬度，可手動覆蓋
-  var _useState43 = useState(function () {
-      return window.innerWidth < 768;
-    }),
-    _useState44 = _slicedToArray(_useState43, 2),
-    isMobile = _useState44[0],
-    setIsMobile = _useState44[1];
-  var key = monthKey(year, month); // 目前月份的資料 key
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
+
+  const key = monthKey(year, month); // 目前月份的資料 key
 
   // ── 環境偵測：Claude artifact 使用 window.storage，其他環境（GitHub Pages 等）使用 localStorage ──
-  var isClaudeEnv = typeof window.storage !== "undefined" && typeof window.storage.get === "function";
+  const isClaudeEnv = typeof window.storage !== "undefined" &&
+                      typeof window.storage.get === "function";
 
   // ── 從持久化儲存載入資料 ──
-  useEffect(function () {
-    _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
-      var data, res, raw, _t2;
-      return _regenerator().w(function (_context2) {
-        while (1) switch (_context2.p = _context2.n) {
-          case 0:
-            _context2.p = 0;
-            data = null;
-            if (!isClaudeEnv) {
-              _context2.n = 2;
-              break;
-            }
-            _context2.n = 1;
-            return window.storage.get("rcw_schedule_v1");
-          case 1:
-            res = _context2.v;
-            if (res !== null && res !== void 0 && res.value) data = JSON.parse(res.value);
-            _context2.n = 3;
-            break;
-          case 2:
-            // GitHub Pages / 本機等一般瀏覽器環境
-            raw = localStorage.getItem("rcw_schedule_v1");
-            if (raw) data = JSON.parse(raw);
-          case 3:
-            if (data) {
-              if (data.employees) setEmployees(data.employees);
-              if (data.shiftDefs) setShiftDefs(data.shiftDefs);
-              if (data.schedules) setSchedules(data.schedules);
-            }
-            _context2.n = 5;
-            break;
-          case 4:
-            _context2.p = 4;
-            _t2 = _context2.v;
-          case 5:
-            setReady(true);
-          case 6:
-            return _context2.a(2);
+  useEffect(() => {
+    (async () => {
+      try {
+        let data = null;
+        if (isClaudeEnv) {
+          // Claude artifact 環境
+          const res = await window.storage.get("rcw_schedule_v1");
+          if (res?.value) data = JSON.parse(res.value);
+        } else {
+          // GitHub Pages / 本機等一般瀏覽器環境
+          const raw = localStorage.getItem("rcw_schedule_v1");
+          if (raw) data = JSON.parse(raw);
         }
-      }, _callee2, null, [[0, 4]]);
-    }))();
+        if (data) {
+          if (data.employees) setEmployees(data.employees);
+          if (data.shiftDefs) setShiftDefs(data.shiftDefs);
+          if (data.schedules) setSchedules(data.schedules);
+        }
+      } catch {
+        // 無儲存資料或解析失敗，使用預設值
+      }
+      setReady(true);
+    })();
   }, []);
 
   // ── 監聽視窗大小變化，自動切換版面 ──
-  useEffect(function () {
-    var onResize = function onResize() {
-      return setIsMobile(window.innerWidth < 768);
-    };
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener("resize", onResize);
-    return function () {
-      return window.removeEventListener("resize", onResize);
-    };
+    return () => window.removeEventListener("resize", onResize);
   }, []);
 
   /**
@@ -2666,65 +2228,76 @@ function App() {
    * - Claude artifact 環境：使用 window.storage（跨 session 保留）
    * - GitHub Pages / 本機環境：使用 localStorage
    */
-  var persist = useCallback(function (emp, sd, sch) {
-    var data = JSON.stringify({
-      employees: emp,
-      shiftDefs: sd,
-      schedules: sch
-    });
-    try {
-      if (isClaudeEnv) {
-        // Claude artifact：非同步儲存，錯誤靜默忽略
-        window.storage.set("rcw_schedule_v1", data).catch(function () {});
-      } else {
-        // 一般瀏覽器：localStorage 同步儲存
-        localStorage.setItem("rcw_schedule_v1", data);
+  const persist = useCallback(
+    (emp, sd, sch) => {
+      const data = JSON.stringify({
+        employees: emp,
+        shiftDefs: sd,
+        schedules: sch,
+      });
+      try {
+        if (isClaudeEnv) {
+          // Claude artifact：非同步儲存，錯誤靜默忽略
+          window.storage.set("rcw_schedule_v1", data).catch(() => {});
+        } else {
+          // 一般瀏覽器：localStorage 同步儲存
+          localStorage.setItem("rcw_schedule_v1", data);
+        }
+      } catch {
+        // 儲存失敗（例如無痕模式 localStorage 被封鎖），靜默忽略
       }
-    } catch (_unused2) {
-      // 儲存失敗（例如無痕模式 localStorage 被封鎖），靜默忽略
-    }
-  }, [isClaudeEnv]);
+    },
+    [isClaudeEnv]
+  );
 
   // ── 確保切換月份時有空白資料 ──
-  useEffect(function () {
+  useEffect(() => {
     if (!ready || schedules[key]) return;
-    var days = daysInMonth(year, month);
-    var empMap = {};
-    employees.forEach(function (emp) {
+    const days = daysInMonth(year, month);
+    const empMap = {};
+    employees.forEach((emp) => {
       empMap[emp.id] = Array(days).fill("-");
     });
-    setSchedules(function (prev) {
-      return _objectSpread(_objectSpread({}, prev), {}, _defineProperty({}, key, empMap));
-    });
+    setSchedules((prev) => ({ ...prev, [key]: empMap }));
   }, [key, ready, schedules, employees, year, month]);
 
   // ── 更新某員工某天的班別 ──
-  var onUpdate = useCallback(function (empId, dayIdx, shift) {
-    // ★ 只做純粹的狀態更新，不在 updater 內呼叫 side effect（persist）
-    // ★ persist 由下方的 useEffect 監聽 schedules 變化後自動觸發
-    setSchedules(function (prev) {
-      var _prev$key;
-      var empShifts = _toConsumableArray(((_prev$key = prev[key]) === null || _prev$key === void 0 ? void 0 : _prev$key[empId]) || Array(daysInMonth(year, month)).fill("-"));
-      empShifts[dayIdx] = shift;
-      return _objectSpread(_objectSpread({}, prev), {}, _defineProperty({}, key, _objectSpread(_objectSpread({}, prev[key]), {}, _defineProperty({}, empId, empShifts))));
-    });
-  }, [key, year, month]);
+  const onUpdate = useCallback(
+    (empId, dayIdx, shift) => {
+      // ★ 只做純粹的狀態更新，不在 updater 內呼叫 side effect（persist）
+      // ★ persist 由下方的 useEffect 監聽 schedules 變化後自動觸發
+      setSchedules((prev) => {
+        const empShifts = [
+          ...(prev[key]?.[empId] || Array(daysInMonth(year, month)).fill("-")),
+        ];
+        empShifts[dayIdx] = shift;
+        return {
+          ...prev,
+          [key]: { ...prev[key], [empId]: empShifts },
+        };
+      });
+    },
+    [key, year, month]
+  );
 
   // ── 員工/班別/完整資料的更新函數 ──
-  var setEmp = useCallback(function (e) {
-    setEmployees(e);
-    persist(e, shiftDefs, schedules);
-  }, [shiftDefs, schedules, persist]);
-  var setSd = useCallback(function (sd) {
-    setShiftDefs(sd);
-    persist(employees, sd, schedules);
-  }, [employees, schedules, persist]);
-  var onImport = useCallback(function (d) {
-    setEmployees(d.employees);
-    setShiftDefs(d.shiftDefs);
-    setSchedules(d.schedules);
-    persist(d.employees, d.shiftDefs, d.schedules);
-  }, [persist]);
+  const setEmp = useCallback(
+    (e) => { setEmployees(e); persist(e, shiftDefs, schedules); },
+    [shiftDefs, schedules, persist]
+  );
+  const setSd = useCallback(
+    (sd) => { setShiftDefs(sd); persist(employees, sd, schedules); },
+    [employees, schedules, persist]
+  );
+  const onImport = useCallback(
+    (d) => {
+      setEmployees(d.employees);
+      setShiftDefs(d.shiftDefs);
+      setSchedules(d.schedules);
+      persist(d.employees, d.shiftDefs, d.schedules);
+    },
+    [persist]
+  );
 
   /**
    * PDF 轉入：新增或覆蓋單一月份班表
@@ -2733,268 +2306,279 @@ function App() {
    * @param {object}  empMap      { empId: string[] }
    * @param {boolean} wasOverwrite 是否為覆蓋（true 時先刪除舊資料再寫入）
    */
-  var onAddSchedule = useCallback(function (yr, mo, empMap) {
-    var wasOverwrite = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-    var k = monthKey(yr, mo);
-    // ★ updater 內只做純資料操作，persist 交由 useEffect 處理
-    setSchedules(function (prev) {
-      var _old = prev[k],
-        rest = _objectWithoutProperties(prev, [k].map(_toPropertyKey));
-      return _objectSpread(_objectSpread({}, rest), {}, _defineProperty({}, k, empMap));
-    });
-    setYear(yr);
-    setMonth(mo);
-    setTab("schedule");
-  }, []);
+  const onAddSchedule = useCallback(
+    (yr, mo, empMap, wasOverwrite = false) => {
+      const k = monthKey(yr, mo);
+      // ★ updater 內只做純資料操作，persist 交由 useEffect 處理
+      setSchedules((prev) => {
+        const { [k]: _old, ...rest } = prev;
+        return { ...rest, [k]: empMap };
+      });
+      setYear(yr);
+      setMonth(mo);
+      setTab("schedule");
+    },
+    []
+  );
 
   // ── 自動 persist：schedules/employees/shiftDefs 任一變化時儲存 ──
   // ★ 把 side effect 從 state updater 移到這裡，解決 React StrictMode 雙呼叫問題
-  useEffect(function () {
+  useEffect(() => {
     if (!ready) return; // 初始載入完成前不儲存（避免覆蓋載入中的資料）
     persist(employees, shiftDefs, schedules);
   }, [schedules, employees, shiftDefs, ready]);
 
   // ── 月份切換 ──
-  var prevMonth = function prevMonth() {
-    if (month === 1) {
-      setYear(function (y) {
-        return y - 1;
-      });
-      setMonth(12);
-    } else setMonth(function (m) {
-      return m - 1;
-    });
+  const prevMonth = () => {
+    if (month === 1) { setYear((y) => y - 1); setMonth(12); }
+    else setMonth((m) => m - 1);
   };
-  var nextMonth = function nextMonth() {
-    if (month === 12) {
-      setYear(function (y) {
-        return y + 1;
-      });
-      setMonth(1);
-    } else setMonth(function (m) {
-      return m + 1;
-    });
+  const nextMonth = () => {
+    if (month === 12) { setYear((y) => y + 1); setMonth(1); }
+    else setMonth((m) => m + 1);
   };
 
   // 載入中畫面
   if (!ready) {
-    return /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: 200,
-        color: "#9ca3af",
-        fontFamily: '"Noto Sans TC", "Microsoft JhengHei", sans-serif'
-      }
-    }, "\u8F09\u5165\u4E2D...");
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: 200,
+          color: "#9ca3af",
+          fontFamily: '"Noto Sans TC", "Microsoft JhengHei", sans-serif',
+        }}
+      >
+        載入中...
+      </div>
+    );
   }
-  var TABS = [{
-    k: "schedule",
-    label: "班表"
-  }, {
-    k: "employees",
-    label: "員工管理"
-  }, {
-    k: "shifttypes",
-    label: "班別設定"
-  }, {
-    k: "data",
-    label: "資料管理"
-  }];
-  return /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: '"Noto Sans TC", "Microsoft JhengHei", sans-serif',
-      background: "#f3f4f6",
-      minHeight: "100vh"
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      background: "linear-gradient(135deg, #0f4c75, #1b6ca8)",
-      color: "#fff",
-      padding: "12px 16px",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between",
-      flexWrap: "wrap",
-      gap: 8
-    }
-  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 22,
-      fontWeight: 500,
-      letterSpacing: 0.5
-    }
-  }, "\u6708\u73ED\u8868\u7BA1\u7406\u7CFB\u7D71"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 15,
-      opacity: 0.75,
-      marginTop: 2
-    }
-  }, "\u547C\u5438\u7167\u8B77\u75C5\u623F\uFF08RCW\uFF09\u30FB\u75C5\u623F\u52A9\u7406")), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      alignItems: "center",
-      gap: 10,
-      flexWrap: "wrap"
-    }
-  }, /*#__PURE__*/React.createElement("button", {
-    onClick: function onClick() {
-      return setIsMobile(function (v) {
-        return !v;
-      });
-    },
-    title: isMobile ? "切換桌機版" : "切換手機版",
-    style: {
-      background: "rgba(255,255,255,0.15)",
-      border: "1px solid rgba(255,255,255,0.4)",
-      color: "#fff",
-      borderRadius: 6,
-      padding: "5px 10px",
-      cursor: "pointer",
-      fontSize: 18,
-      fontFamily: "inherit",
-      display: "flex",
-      alignItems: "center",
-      gap: 4
-    }
-  }, isMobile ? "💻 桌機版" : "📱 手機版"), tab === "schedule" && /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      alignItems: "center",
-      gap: 10
-    }
-  }, /*#__PURE__*/React.createElement("button", {
-    onClick: prevMonth,
-    style: {
-      background: "rgba(255,255,255,0.2)",
-      border: "none",
-      color: "#fff",
-      borderRadius: 6,
-      padding: "4px 12px",
-      cursor: "pointer",
-      fontSize: 25,
-      lineHeight: 1
-    }
-  }, "\u2039"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      textAlign: "center",
-      lineHeight: 1.4
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 21,
-      fontWeight: 500
-    }
-  }, "\u6C11\u570B ", toROC(year), " \u5E74 ", month, " \u6708"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 14,
-      opacity: 0.7
-    }
-  }, "\u897F\u5143 ", year, " \u5E74")), /*#__PURE__*/React.createElement("button", {
-    onClick: nextMonth,
-    style: {
-      background: "rgba(255,255,255,0.2)",
-      border: "none",
-      color: "#fff",
-      borderRadius: 6,
-      padding: "4px 12px",
-      cursor: "pointer",
-      fontSize: 25,
-      lineHeight: 1
-    }
-  }, "\u203A"))), " "), /*#__PURE__*/React.createElement("div", {
-    style: {
-      background: "#fff",
-      borderBottom: "1px solid #e5e7eb",
-      display: "flex",
-      overflowX: "auto",
-      paddingLeft: 4
-    }
-  }, TABS.map(function (t) {
-    return /*#__PURE__*/React.createElement("button", {
-      key: t.k,
-      onClick: function onClick() {
-        return setTab(t.k);
-      },
-      style: {
-        padding: "10px 16px",
-        border: "none",
-        borderBottom: tab === t.k ? "2px solid #1b6ca8" : "2px solid transparent",
-        background: "none",
-        color: tab === t.k ? "#1b6ca8" : "#6b7280",
-        fontWeight: tab === t.k ? 500 : 400,
-        cursor: "pointer",
-        fontSize: 18,
-        fontFamily: "inherit",
-        whiteSpace: "nowrap",
-        marginBottom: -1
-      }
-    }, t.label);
-  })), /*#__PURE__*/React.createElement("div", {
-    style: {
-      padding: 16,
-      maxWidth: 1200,
-      margin: "0 auto"
-    }
-  }, tab === "schedule" && (isMobile ?
-  /*#__PURE__*/
-  // 手機版：月曆式 + 員工選擇
-  React.createElement(MobileScheduleTab, {
-    employees: employees,
-    shiftDefs: shiftDefs,
-    schedule: schedules[key] || {},
-    year: year,
-    month: month,
-    onUpdate: onUpdate
-  }) :
-  /*#__PURE__*/
-  // 桌機版：橫向全員班表
-  React.createElement(ScheduleTab, {
-    employees: employees,
-    shiftDefs: shiftDefs,
-    schedule: schedules[key] || {},
-    year: year,
-    month: month,
-    onUpdate: onUpdate
-  })), tab === "employees" && /*#__PURE__*/React.createElement(EmployeeTab, {
-    employees: employees,
-    onChange: setEmp
-  }), tab === "shifttypes" && /*#__PURE__*/React.createElement(ShiftTypeTab, {
-    shiftDefs: shiftDefs,
-    onChange: setSd
-  }), tab === "data" && /*#__PURE__*/React.createElement(DataTab, {
-    employees: employees,
-    shiftDefs: shiftDefs,
-    schedules: schedules,
-    onImport: onImport,
-    onAddSchedule: onAddSchedule
-  })));
+
+  const TABS = [
+    { k: "schedule",   label: "班表" },
+    { k: "employees",  label: "員工管理" },
+    { k: "shifttypes", label: "班別設定" },
+    { k: "data",       label: "資料管理" },
+  ];
+
+  return (
+    <div
+      style={{
+        fontFamily: '"Noto Sans TC", "Microsoft JhengHei", sans-serif',
+        background: "#f3f4f6",
+        minHeight: "100vh",
+      }}
+    >
+      {/* ═══ 標頭 ═══ */}
+      <div
+        style={{
+          background: "linear-gradient(135deg, #0f4c75, #1b6ca8)",
+          color: "#fff",
+          padding: "12px 16px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: 8,
+        }}
+      >
+        {/* 系統標題 */}
+        <div>
+          <div style={{ fontSize: 22, fontWeight: 500, letterSpacing: 0.5 }}>
+            月班表管理系統
+          </div>
+          <div style={{ fontSize: 15, opacity: 0.75, marginTop: 2 }}>
+            呼吸照護病房（RCW）・病房助理
+          </div>
+        </div>
+
+        {/* 右側：版面切換 + 月份導覽 */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+          {/* 桌機/手機版切換按鈕 */}
+          <button
+            onClick={() => setIsMobile((v) => !v)}
+            title={isMobile ? "切換桌機版" : "切換手機版"}
+            style={{
+              background: "rgba(255,255,255,0.15)",
+              border: "1px solid rgba(255,255,255,0.4)",
+              color: "#fff",
+              borderRadius: 6,
+              padding: "5px 10px",
+              cursor: "pointer",
+              fontSize: 18,
+              fontFamily: "inherit",
+              display: "flex",
+              alignItems: "center",
+              gap: 4,
+            }}
+          >
+            {isMobile ? "💻 桌機版" : "📱 手機版"}
+          </button>
+
+          {/* 月份導覽（只在班表頁顯示） */}
+          {tab === "schedule" && (
+          <div
+            style={{ display: "flex", alignItems: "center", gap: 10 }}
+          >
+            <button
+              onClick={prevMonth}
+              style={{
+                background: "rgba(255,255,255,0.2)",
+                border: "none",
+                color: "#fff",
+                borderRadius: 6,
+                padding: "4px 12px",
+                cursor: "pointer",
+                fontSize: 25,
+                lineHeight: 1,
+              }}
+            >
+              ‹
+            </button>
+            <div style={{ textAlign: "center", lineHeight: 1.4 }}>
+              <div style={{ fontSize: 21, fontWeight: 500 }}>
+                民國 {toROC(year)} 年 {month} 月
+              </div>
+              <div style={{ fontSize: 14, opacity: 0.7 }}>
+                西元 {year} 年
+              </div>
+            </div>
+            <button
+              onClick={nextMonth}
+              style={{
+                background: "rgba(255,255,255,0.2)",
+                border: "none",
+                color: "#fff",
+                borderRadius: 6,
+                padding: "4px 12px",
+                cursor: "pointer",
+                fontSize: 25,
+                lineHeight: 1,
+              }}
+            >
+              ›
+            </button>
+          </div>
+        )}
+        </div> {/* 右側: 切換按鈕+月份導覽 */}
+      </div>
+
+      {/* ═══ 分頁導覽列 ═══ */}
+      <div
+        style={{
+          background: "#fff",
+          borderBottom: "1px solid #e5e7eb",
+          display: "flex",
+          overflowX: "auto",
+          paddingLeft: 4,
+        }}
+      >
+        {TABS.map((t) => (
+          <button
+            key={t.k}
+            onClick={() => setTab(t.k)}
+            style={{
+              padding: "10px 16px",
+              border: "none",
+              borderBottom:
+                tab === t.k ? "2px solid #1b6ca8" : "2px solid transparent",
+              background: "none",
+              color: tab === t.k ? "#1b6ca8" : "#6b7280",
+              fontWeight: tab === t.k ? 500 : 400,
+              cursor: "pointer",
+              fontSize: 18,
+              fontFamily: "inherit",
+              whiteSpace: "nowrap",
+              marginBottom: -1,
+            }}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      {/* ═══ 頁面內容 ═══ */}
+      <div
+        style={{
+          padding: 16,
+          maxWidth: 1200,
+          margin: "0 auto",
+        }}
+      >
+        {tab === "schedule" && (
+          isMobile ? (
+            // 手機版：月曆式 + 員工選擇
+            <MobileScheduleTab
+              employees={employees}
+              shiftDefs={shiftDefs}
+              schedule={schedules[key] || {}}
+              year={year}
+              month={month}
+              onUpdate={onUpdate}
+            />
+          ) : (
+            // 桌機版：橫向全員班表
+            <ScheduleTab
+              employees={employees}
+              shiftDefs={shiftDefs}
+              schedule={schedules[key] || {}}
+              year={year}
+              month={month}
+              onUpdate={onUpdate}
+            />
+          )
+        )}
+        {tab === "employees" && (
+          <EmployeeTab employees={employees} onChange={setEmp} />
+        )}
+        {tab === "shifttypes" && (
+          <ShiftTypeTab shiftDefs={shiftDefs} onChange={setSd} />
+        )}
+        {tab === "data" && (
+          <DataTab
+            employees={employees}
+            shiftDefs={shiftDefs}
+            schedules={schedules}
+            onImport={onImport}
+            onAddSchedule={onAddSchedule}
+          />
+        )}
+      </div>
+    </div>
+  );
 }
 
 // 掛載 App 到 #root
 ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
-  </script>
 
-  <!-- 載入完成後隱藏 loading 畫面 -->
-  <script>
-    var _obs = new MutationObserver(function() {
-      var root = document.getElementById('root');
-      if (root && root.children.length > 0) {
-        var s = document.getElementById('loading-screen');
-        if (s) {
-          s.classList.add('hidden');
-          setTimeout(function(){ if(s.parentNode) s.parentNode.removeChild(s); }, 500);
-        }
-        _obs.disconnect();
-      }
-    });
-    _obs.observe(document.getElementById('root'), { childList: true, subtree: true });
-    setTimeout(function(){
+</script>
+
+<script>
+(function() {
+  var obs = new MutationObserver(function() {
+    var root = document.getElementById('root');
+    if (root && root.children.length > 0) {
       var s = document.getElementById('loading-screen');
-      if (s && s.parentNode) s.parentNode.removeChild(s);
-    }, 10000);
-  </script>
+      if (s) {
+        s.classList.add('hidden');
+        setTimeout(function() { if (s.parentNode) s.parentNode.removeChild(s); }, 500);
+      }
+      obs.disconnect();
+    }
+  });
+  var el = document.getElementById('root');
+  if (el) obs.observe(el, { childList: true, subtree: true });
+  setTimeout(function() {
+    var r = document.getElementById('root');
+    if (!r || r.children.length === 0) {
+      var s = document.getElementById('loading-screen');
+      if (s) s.innerHTML = '<div style="font-size:20px">⚠️ 載入逾時</div><div style="font-size:14px;opacity:.8;margin-top:8px">請確認網路連線後重新整理</div><button onclick="location.reload()" style="margin-top:16px;padding:10px 24px;background:#fff;color:#1b6ca8;border:none;border-radius:6px;font-size:15px;cursor:pointer;font-weight:700">重新整理</button>';
+    }
+  }, 15000);
+})();
+</script>
 
 </body>
 </html>

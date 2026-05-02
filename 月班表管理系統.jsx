@@ -2425,12 +2425,14 @@ function App() {
 
   // UI 狀態
   // 預設顯示當下系統月份（開啟即到當月）
-  const [year, setYear]     = useState(() => new Date().getFullYear());
-  const [month, setMonth]   = useState(() => new Date().getMonth() + 1);
-  const [tab, setTab]       = useState("schedule");
-  const [ready, setReady]   = useState(false); // 資料是否載入完成
+  const [year, setYear]       = useState(() => new Date().getFullYear());
+  const [month, setMonth]     = useState(() => new Date().getMonth() + 1);
+  const [tab, setTab]         = useState("schedule");
+  const [ready, setReady]     = useState(false); // 資料是否載入完成
   // 版面模式：auto 偵測視窗寬度，可手動覆蓋
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
+  // 還原計數器：每次 XML 還原後遞增，強制手機版元件重新掛載並清除內部狀態
+  const [restoreKey, setRestoreKey] = useState(0);
 
   const key = monthKey(year, month); // 目前月份的資料 key
 
@@ -2543,6 +2545,9 @@ function App() {
       setShiftDefs(d.shiftDefs);
       setSchedules(d.schedules);
       persist(d.employees, d.shiftDefs, d.schedules);
+      // ★ 遞增 restoreKey：強制手機版 MobileScheduleTab 重新掛載
+      // ★ 清除舊的 selEmpId / editing 狀態，避免還原後畫面空白
+      setRestoreKey((k) => k + 1);
     },
     [persist]
   );
@@ -2767,6 +2772,7 @@ function App() {
           isMobile ? (
             // 手機版：月曆式 + 員工選擇
             <MobileScheduleTab
+              key={restoreKey}
               employees={employees}
               shiftDefs={shiftDefs}
               schedule={schedules[key] || {}}

@@ -2116,6 +2116,303 @@ function MobileScheduleTab({ employees, shiftDefs, schedule, year, month, onUpda
   );
 }
 
+
+// ═══════════════════════════════════════
+// 十、Google Drive 備份/還原列
+// ═══════════════════════════════════════
+
+/**
+ * 設定值
+ * ★ client_secret 不可放前端，瀏覽器 OAuth 只需 client_id
+ * ★ 需在 Google Cloud Console 加入授權來源：https://achir1015.github.io
+ */
+const GDRIVE_CONFIG = {
+  CLIENT_ID:  "296426745832-dhmgl03sn5kocr7ajcu3l1cgpm9k48bt.apps.googleusercontent.com",
+  FOLDER_ID:  "1KaFaTW_YDupDZ2JpMuxHMu77fBVgXv2d",
+  SCOPE:      "https://www.googleapis.com/auth/drive.file",
+  DISCOVERY:  "https://www.googleapis.com/discovery/v1/apis/drive/v3/rest",
+};
+
+/**
+ * GDriveBar：最頂端的備份/還原操作列
+ * 使用 Google Identity Services（GIS）Token 模式，無需 client_secret
+ */
+function GDriveBar({ employees, shiftDefs, schedules, onImport }) {
+  const [status, setStatus]   = useState(null);  // { type: "info"|"ok"|"err", msg }
+  const [loading, setLoading] = useState(false);
+  const [token, setToken]     = useState(null);   // Google OAuth access token
+
+  // ── 動態載入 Google Identity Services + GAPI ──
+  const loadGoogle = () =>
+    new Promise((resolve, reject) => {
+      // 同時載入 GIS 與 GAPI
+      let gisReady = false, gapiReady = false;
+      const tryResolve = () => { if (gisReady && gapiReady) resolve(); };
+
+      if (!window.google?.accounts?.oauth2) {
+        const s = document.createElement("script");
+        s.src = "https://accounts.google.com/gsi/client";
+        s.onload = () => { gisReady = true; tryResolve(); };
+        s.onerror = () => reject(new Error("GIS 載入失敗"));
+        document.head.appendChild(s);
+      } else { gisReady = true; }
+
+      if (!window.gapi) {
+        const s = document.createElement("script");
+        s.src = "https://apis.google.com/js/api.js";
+        s.onload = () => {
+          window.gapi.load("client", () => {
+            window.gapi.client
+              .init({ discoveryDocs: [GDRIVE_CONFIG.DISCOVERY] })
+              .then(() => { gapiReady = true; tryResolve(); })
+              .catch(reject);
+          });
+        };
+        s.onerror = () => reject(new Error("GAPI 載入失敗"));
+        document.head.appendChild(s);
+      } else if (window.gapi.client) { gapiReady = true; }
+      else {
+        window.gapi.load("client", () => {
+          window.gapi.client
+            .init({ discoveryDocs: [GDRIVE_CONFIG.DISCOVERY] })
+            .then(() => { gapiReady = true; tryResolve(); })
+            .catch(reject);
+        });
+      }
+      tryResolve();
+    });
+
+  // ── 取得 OAuth Token（彈出授權視窗）──
+  const getToken = () =>
+    new Promise((resolve, reject) => {
+      const client = window.google.accounts.oauth2.initTokenClient({
+        client_id: GDRIVE_CONFIG.CLIENT_ID,
+        scope:     GDRIVE_CONFIG.SCOPE,
+        callback:  (resp) => {
+          if (resp.error) reject(new Error("授權失敗：" + resp.error));
+          else resolve(resp.access_token);
+        },
+      });
+      client.requestAccessToken({ prompt: token ? "" : "consent" });
+    });
+
+  // ── 產生備份檔名：msYYYYMMDD + 兩位流水號 ──
+  const genFilename = async (accessToken) => {
+    const today = new Date();
+    const ymd =
+      today.getFullYear() +
+      String(today.getMonth() + 1).padStart(2, "0") +
+      String(today.getDate()).padStart(2, "0");
+    const prefix = "ms" + ymd;
+
+    // 查詢同日期已有的檔案
+    window.gapi.client.setToken({ access_token: accessToken });
+    const res = await window.gapi.client.drive.files.list({
+      q: `name contains '${prefix}' and '${GDRIVE_CONFIG.FOLDER_ID}' in parents and trashed=false`,
+      fields: "files(name)",
+      orderBy: "name desc",
+    });
+    const files = res.result.files || [];
+    // 取最大流水號 + 1
+    let maxSeq = 0;
+    files.forEach((f) => {
+      const m = f.name.match(/ms\d{8}(\d{2})\.xml$/);
+      if (m) maxSeq = Math.max(maxSeq, parseInt(m[1]));
+    });
+    return prefix + String(maxSeq + 1).padStart(2, "0") + ".xml";
+  };
+
+  // ── 備份：序列化 → 上傳至 Google Drive ──
+  const handleBackup = async () => {
+    setLoading(true);
+    setStatus({ type: "info", msg: "連線 Google Drive 中..." });
+    try {
+      await loadGoogle();
+      const accessToken = await getToken();
+      setToken(accessToken);
+      window.gapi.client.setToken({ access_token: accessToken });
+
+      setStatus({ type: "info", msg: "產生備份檔案..." });
+      const xmlContent = serializeToXml({ employees, shiftDefs, schedules });
+      const filename   = await genFilename(accessToken);
+
+      setStatus({ type: "info", msg: `上傳 ${filename} ...` });
+
+      // 使用 multipart upload 上傳 XML 檔
+      const metadata = {
+        name:    filename,
+        parents: [GDRIVE_CONFIG.FOLDER_ID],
+        mimeType: "application/xml",
+      };
+      const boundary = "rcw_backup_boundary";
+      const body = [
+        "--" + boundary,
+        "Content-Type: application/json; charset=UTF-8",
+        "",
+        JSON.stringify(metadata),
+        "--" + boundary,
+        "Content-Type: application/xml; charset=UTF-8",
+        "",
+        xmlContent,
+        "--" + boundary + "--",
+      ].join("\r\n");
+
+      const resp = await fetch(
+        "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart",
+        {
+          method: "POST",
+          headers: {
+            Authorization: "Bearer " + accessToken,
+            "Content-Type": `multipart/related; boundary=${boundary}`,
+          },
+          body,
+        }
+      );
+      if (!resp.ok) throw new Error("上傳失敗（HTTP " + resp.status + "）");
+
+      setStatus({ type: "ok", msg: "✓ 備份完成：" + filename });
+    } catch (err) {
+      setStatus({ type: "err", msg: "✗ 備份失敗：" + err.message });
+    }
+    setLoading(false);
+  };
+
+  // ── 還原：取最新備份 → 下載 → 解析 → 匯入 ──
+  const handleRestore = async () => {
+    setLoading(true);
+    setStatus({ type: "info", msg: "連線 Google Drive 中..." });
+    try {
+      await loadGoogle();
+      const accessToken = await getToken();
+      setToken(accessToken);
+      window.gapi.client.setToken({ access_token: accessToken });
+
+      setStatus({ type: "info", msg: "搜尋最新備份..." });
+
+      // 列出資料夾內 ms 開頭的 xml 檔，取名稱最大（即最新）的
+      const res = await window.gapi.client.drive.files.list({
+        q: `name contains 'ms' and '${GDRIVE_CONFIG.FOLDER_ID}' in parents and trashed=false and mimeType='application/xml'`,
+        fields: "files(id,name)",
+        orderBy: "name desc",
+        pageSize: 1,
+      });
+      const files = res.result.files || [];
+
+      if (files.length === 0) {
+        setStatus({ type: "err", msg: "✗ 無還原檔案，請先備份系統資料" });
+        setLoading(false);
+        return;
+      }
+
+      const latest = files[0];
+      const confirm = window.confirm(
+        "【還原確認】\n\n" +
+        "將從 Google Drive 還原以下備份：\n" +
+        "「" + latest.name + "」\n\n" +
+        "目前系統資料將被覆蓋，確定繼續？"
+      );
+      if (!confirm) { setStatus(null); setLoading(false); return; }
+
+      setStatus({ type: "info", msg: "下載 " + latest.name + " ..." });
+
+      const dlResp = await fetch(
+        "https://www.googleapis.com/drive/v3/files/" + latest.id + "?alt=media",
+        { headers: { Authorization: "Bearer " + accessToken } }
+      );
+      if (!dlResp.ok) throw new Error("下載失敗（HTTP " + dlResp.status + "）");
+      const xmlStr = await dlResp.text();
+
+      setStatus({ type: "info", msg: "解析資料..." });
+      const data = parseFromXml(xmlStr);
+      onImport(data);
+
+      setStatus({ type: "ok", msg: "✓ 還原完成：" + latest.name });
+    } catch (err) {
+      setStatus({ type: "err", msg: "✗ 還原失敗：" + err.message });
+    }
+    setLoading(false);
+  };
+
+  const statusColor = {
+    info: { bg: "#eff6ff", border: "#bfdbfe", color: "#1d4ed8" },
+    ok:   { bg: "#f0fdf4", border: "#bbf7d0", color: "#15803d" },
+    err:  { bg: "#fef2f2", border: "#fecaca", color: "#b91c1c" },
+  }[status?.type] || {};
+
+  return (
+    <div style={{
+      background: "#1e3a5f",
+      padding: "8px 16px",
+      display: "flex",
+      alignItems: "center",
+      gap: 10,
+      flexWrap: "wrap",
+    }}>
+      {/* 區塊標題 */}
+      <span style={{ fontSize: 13, color: "#93c5fd", fontWeight: 500, whiteSpace: "nowrap" }}>
+        ☁ Google Drive：
+      </span>
+
+      {/* 備份按鈕 */}
+      <button
+        onClick={handleBackup}
+        disabled={loading}
+        style={{
+          padding: "6px 16px",
+          background: loading ? "#374151" : "#16a34a",
+          color: "#fff", border: "none", borderRadius: 6,
+          cursor: loading ? "not-allowed" : "pointer",
+          fontSize: 14, fontWeight: 500, fontFamily: "inherit",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {loading ? "處理中..." : "☁ 備份系統資料"}
+      </button>
+
+      {/* 還原按鈕 */}
+      <button
+        onClick={handleRestore}
+        disabled={loading}
+        style={{
+          padding: "6px 16px",
+          background: loading ? "#374151" : "#d97706",
+          color: "#fff", border: "none", borderRadius: 6,
+          cursor: loading ? "not-allowed" : "pointer",
+          fontSize: 14, fontWeight: 500, fontFamily: "inherit",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {loading ? "處理中..." : "☁ 還原系統資料"}
+      </button>
+
+      {/* 狀態訊息 */}
+      {status && (
+        <div style={{
+          padding: "4px 12px", borderRadius: 6, fontSize: 13,
+          background: statusColor.bg,
+          border: "1px solid " + statusColor.border,
+          color: statusColor.color,
+          flex: 1, minWidth: 180,
+        }}>
+          {status.msg}
+        </div>
+      )}
+
+      {/* 關閉狀態訊息 */}
+      {status && (
+        <button
+          onClick={() => setStatus(null)}
+          style={{
+            background: "transparent", border: "none",
+            color: "#9ca3af", cursor: "pointer",
+            fontSize: 16, padding: "0 4px",
+          }}
+        >✕</button>
+      )}
+    </div>
+  );
+}
+
 // ═══════════════════════════════════════
 // 九、主應用程式元件
 // ═══════════════════════════════════════
@@ -2322,6 +2619,14 @@ function App() {
         minHeight: "100vh",
       }}
     >
+      {/* ═══ Google Drive 備份/還原列（最頂端）═══ */}
+      <GDriveBar
+        employees={employees}
+        shiftDefs={shiftDefs}
+        schedules={schedules}
+        onImport={onImport}
+      />
+
       {/* ═══ 標頭 ═══ */}
       <div
         style={{

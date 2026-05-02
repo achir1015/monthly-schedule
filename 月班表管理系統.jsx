@@ -2127,7 +2127,7 @@ function MobileScheduleTab({ employees, shiftDefs, schedule, year, month, onUpda
  * ★ 需在 Google Cloud Console 加入授權來源：https://achir1015.github.io
  */
 const GDRIVE_CONFIG = {
-  CLIENT_ID:  "296426745832-dhmgl03sn5kocr7ajcu3l1cgpm9k48bt.apps.googleusercontent.com",
+  CLIENT_ID:  "296426745832-tnu06fpo35b9buevtedfah0kg73mtbl9.apps.googleusercontent.com",
   FOLDER_ID:  "1KaFaTW_YDupDZ2JpMuxHMu77fBVgXv2d",
   SCOPE:      "https://www.googleapis.com/auth/drive.file",
   DISCOVERY:  "https://www.googleapis.com/discovery/v1/apis/drive/v3/rest",

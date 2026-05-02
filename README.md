@@ -45,3 +45,11 @@ Chrome 右上角選單 → 新增無痕式視窗
 Chrome 網址列按 🔒 鎖頭圖示
 或按 F12 → Network → 勾選 "Disable cache" → 重新整理
 
+整個系統的完整旅程回顧：
+需求分析 PDF → 系統設計 → 開發 → 除錯 → 部署
+最終完成的功能：
+類別功能班表PDF 轉入、桌機/手機版、月份切換、個別修改資料XML 備份還原、Google Drive 雲端備份還原管理員工管理、班別設定（自訂顏色）部署GitHub Pages 單檔部署、自動顯示當月
+網址：
+👉 https://achir1015.github.io/monthly-schedule/
+
+
